@@ -1,6 +1,6 @@
 package com.comarch.tomasz.kosacki;
 
-import com.comarch.tomasz.kosacki.ConfigurationClass.ProjectConfiguration;
+import com.comarch.tomasz.kosacki.configurationClass.ProjectConfiguration;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
 

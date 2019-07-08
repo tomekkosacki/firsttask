@@ -1,4 +1,4 @@
-package com.comarch.tomasz.kosacki.ConfigurationClass;
+package com.comarch.tomasz.kosacki.configurationClass;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
