@@ -16,11 +16,6 @@ public class UserDB {
         users.add(new UserDto(4,"FN4", "LN4", "email4@email.com", new Date()));
     }
 
-//    public static UserDto getById(int id) {
-//        for(UserDto user : users) {
-//            return user.getId().equals(id);
-//        }
-//    }
 
     public static List<UserDto> getAllUsers(){
         return  users;
