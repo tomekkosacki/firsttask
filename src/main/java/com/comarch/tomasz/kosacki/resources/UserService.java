@@ -10,17 +10,24 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("/users")
 public class UserService {
 
-    UserService() {
+    public UserService() {
     }
+
+//    @GET
+//    @Timed
+//    @Path("/get/{id}")
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public UserDto getUser(@PathParam("id") int id) { return UserDB.getById(id); }
 
     @GET
     @Timed
-    @Path("/get/{id}")
+    @Path("/get/all")
     @Produces(MediaType.APPLICATION_JSON)
-    public UserDto getUser(@PathParam("id") int id) { return UserDB.getById(id); }
+    public List<UserDto>getAllUsers() { return UserDB.getAllUsers(); }
 
 }
