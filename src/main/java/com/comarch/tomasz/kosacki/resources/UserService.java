@@ -21,6 +21,8 @@ public class UserService {
     @Timed
     @Path("/get/all")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<UserDto>getAllUsers() { return UserDB.getAllUsers(); }
-
+    public List<UserDto> getAllUsers() {
+        System.out.println("Read all users");
+        return UserDB.getAllUsers();
+    }
 }

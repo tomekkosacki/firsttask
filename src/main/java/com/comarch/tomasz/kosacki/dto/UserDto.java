@@ -13,8 +13,6 @@ public class UserDto {
     private String lastName;
     private String email;
     private String creationDate;
-    DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
     public UserDto() {
     }
 
@@ -23,21 +21,32 @@ public class UserDto {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         this.creationDate = formatter.format(creationDate);
     }
 
     @JsonProperty
-    public int getId(){ return id; }
+    public int getId() {
+        return id;
+    }
 
     @JsonProperty
-    public String getFirstName() { return firstName; }
+    public String getFirstName() {
+        return firstName;
+    }
 
     @JsonProperty
-    public String getLastName() { return lastName; }
+    public String getLastName() {
+        return lastName;
+    }
 
     @JsonProperty
-    public String getEmail() { return email; }
+    public String getEmail() {
+        return email;
+    }
 
     @JsonProperty
-    public String getCreationDate() { return creationDate; }
+    public String getCreationDate() {
+        return creationDate;
+    }
 }
