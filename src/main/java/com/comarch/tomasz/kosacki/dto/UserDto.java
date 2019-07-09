@@ -11,6 +11,7 @@ public class UserDto {
     private String lastName;
     private String email;
     private String creationDate;
+    private DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public UserDto() {
     }
@@ -20,7 +21,6 @@ public class UserDto {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         this.creationDate = formatter.format(creationDate);
     }
 
@@ -60,7 +60,7 @@ public class UserDto {
         this.email = email;
     }
 
-    public void setCreationDate(String creationDate) {
-        this.creationDate = creationDate;
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = formatter.format(creationDate);;
     }
 }

@@ -2,33 +2,22 @@ package com.comarch.tomasz.kosacki.mapper;
 
 import com.comarch.tomasz.kosacki.dto.UserDto;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
+import org.modelmapper.ModelMapper;
 
 public class Mapper {
 
     public UserDto userEntityToUserDto(UserEntity from) {
-
-        UserDto user = new UserDto();
-        user.setId(from.getId());
-        user.setFirstName(from.getFirstName());
-        user.setLastName(from.getLastName());
-        user.setEmail(from.getEmail());
-
-        //zly przekazywany typ
-        //user.setCreationDate(from.getCreationDate());
+        
+        ModelMapper modelMapper = new ModelMapper();
+        UserDto user = modelMapper.map(from, UserDto.class);
 
         return user;
     }
 
     public UserEntity userDtoToUserEntity(UserDto from) {
 
-        UserEntity user = new UserEntity();
-        user.setId(from.getId());
-        user.setFirstName(from.getFirstName());
-        user.setLastName(from.getLastName());
-        user.setEmail(from.getEmail());
-
-        //zly przekazywany typ
-        //user.setCreationDate(from.getCreationDate());
+        ModelMapper modelMapper = new ModelMapper();
+        UserEntity user = modelMapper.map(from, UserEntity.class);
 
         return user;
     }
