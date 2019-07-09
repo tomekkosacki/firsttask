@@ -1,19 +1,13 @@
 package com.comarch.tomasz.kosacki.userEntity;
 
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 public class UserEntity {
 
-    @NotNull
     private int id;
-    @NotNull
     private String firstName;
-    @NotNull
     private String lastName;
-    @NotNull
     private String email;
-    @NotNull
     private Date creationDate;
 
     public UserEntity() {

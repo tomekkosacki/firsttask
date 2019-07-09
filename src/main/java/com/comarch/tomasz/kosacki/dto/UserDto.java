@@ -1,7 +1,5 @@
 package com.comarch.tomasz.kosacki.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.text.DateFormat;
@@ -13,6 +11,7 @@ public class UserDto {
     private String lastName;
     private String email;
     private String creationDate;
+
     public UserDto() {
     }
 
@@ -25,28 +24,43 @@ public class UserDto {
         this.creationDate = formatter.format(creationDate);
     }
 
-    @JsonProperty
     public int getId() {
         return id;
     }
 
-    @JsonProperty
     public String getFirstName() {
         return firstName;
     }
 
-    @JsonProperty
     public String getLastName() {
         return lastName;
     }
 
-    @JsonProperty
     public String getEmail() {
         return email;
     }
 
-    @JsonProperty
     public String getCreationDate() {
         return creationDate;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setCreationDate(String creationDate) {
+        this.creationDate = creationDate;
     }
 }
