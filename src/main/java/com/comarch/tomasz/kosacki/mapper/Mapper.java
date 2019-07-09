@@ -7,7 +7,7 @@ import org.modelmapper.ModelMapper;
 public class Mapper {
 
     public UserDto userEntityToUserDto(UserEntity from) {
-        
+
         ModelMapper modelMapper = new ModelMapper();
         UserDto user = modelMapper.map(from, UserDto.class);
 
