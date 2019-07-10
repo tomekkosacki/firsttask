@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class UserEntity {
 
-    private int id;
+    private String id;
     private String firstName;
     private String lastName;
     private String email;
@@ -13,7 +13,7 @@ public class UserEntity {
     public UserEntity() {
     }
 
-    public UserEntity(int id, String firstName, String lastName, String email, Date creationDate) {
+    public UserEntity(String id, String firstName, String lastName, String email, Date creationDate) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -21,7 +21,7 @@ public class UserEntity {
         this.creationDate = creationDate;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -41,7 +41,7 @@ public class UserEntity {
         return creationDate;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -6,7 +6,6 @@ import java.text.DateFormat;
 
 public class UserDto {
 
-    private int id;
     private String firstName;
     private String lastName;
     private String email;
@@ -16,16 +15,11 @@ public class UserDto {
     public UserDto() {
     }
 
-    public UserDto(int id, String firstName, String lastName, String email, Date creationDate) {
-        this.id = id;
+    public UserDto(String firstName, String lastName, String email, Date creationDate) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.creationDate = formatter.format(creationDate);
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getFirstName() {
@@ -42,10 +36,6 @@ public class UserDto {
 
     public String getCreationDate() {
         return creationDate;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public void setFirstName(String firstName) {

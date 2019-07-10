@@ -1,5 +1,7 @@
 package com.comarch.tomasz.kosacki.dao;
 
+import com.comarch.tomasz.kosacki.db.UserDB;
+import com.comarch.tomasz.kosacki.dto.UserDto;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 
 import java.util.List;
@@ -8,8 +10,10 @@ public interface UserDao {
 
     List<UserEntity> getAllUsers();
 
-    UserEntity getUserById(int id);
+    UserEntity getUserById(String userId);
 
-    UserEntity getUserByFirstName(String userFirstName);
+    List<UserEntity> getUserByFirstName(String userFirstName);
+
+    void createUser(UserEntity newUser);
 
 }
