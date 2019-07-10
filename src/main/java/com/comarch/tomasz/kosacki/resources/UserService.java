@@ -31,14 +31,9 @@ public class UserService {
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
     public List<UserDto> getAllUsers() {
-
-        List<UserDto> userDtoList = new ArrayList<>();
-        List<UserEntity> entityUserList = this.userDB.getAllUsers();
-        for (UserEntity userEntity : entityUserList) {
-            userDtoList.add(this.mapper.userEntityToUserDto(userEntity));
-        }
+        
         System.out.println("Read all users");
-        return userDtoList;
+        return this.mapper.userEntityListToUserDtoList(this.userDB.getAllUsers());
     }
 
     @GET
