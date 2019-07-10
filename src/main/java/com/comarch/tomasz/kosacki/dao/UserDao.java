@@ -8,5 +8,4 @@ public interface UserDao {
 
     List<UserEntity> getAllUsers();
 
-    void addUser(UserEntity UserEntity);
 }

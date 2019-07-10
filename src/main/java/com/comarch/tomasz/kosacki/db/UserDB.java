@@ -1,23 +1,26 @@
 package com.comarch.tomasz.kosacki.db;
 
-import com.comarch.tomasz.kosacki.dto.UserDto;
+import com.comarch.tomasz.kosacki.dao.UserDao;
+import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class UserDB {
+public class UserDB implements UserDao {
 
-    private static List<UserDto> users = new ArrayList<>();
+    private List<UserEntity> users = new ArrayList<>();
 
-    static {
-        users.add(new UserDto(1, "FN1", "LN1", "email1@email.com", new Date()));
-        users.add(new UserDto(2, "FN2", "LN2", "email2@email.com", new Date()));
-        users.add(new UserDto(3, "FN3", "LN3", "email3@email.com", new Date()));
-        users.add(new UserDto(4, "FN4", "LN4", "email4@email.com", new Date()));
+    public UserDB() {
+        this.users.add(new UserEntity(1, "FN1", "LN1", "email1@email.com", new Date()));
+        this.users.add(new UserEntity(2, "FN2", "LN2", "email2@email.com", new Date()));
+        this.users.add(new UserEntity(3, "FN3", "LN3", "email3@email.com", new Date()));
+        this.users.add(new UserEntity(4, "FN4", "LN4", "email4@email.com", new Date()));
     }
 
-    public static List<UserDto> getAllUsers() {
-        return users;
+
+    @Override
+    public List<UserEntity> getAllUsers() {
+        return this.users;
     }
 }
