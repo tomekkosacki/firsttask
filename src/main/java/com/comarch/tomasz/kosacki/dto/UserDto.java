@@ -61,6 +61,7 @@ public class UserDto {
     }
 
     public void setCreationDate(Date creationDate) {
-        this.creationDate = formatter.format(creationDate);;
+        this.creationDate = formatter.format(creationDate);
+        ;
     }
 }

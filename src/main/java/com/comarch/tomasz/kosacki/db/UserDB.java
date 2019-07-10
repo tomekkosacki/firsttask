@@ -23,4 +23,23 @@ public class UserDB implements UserDao {
     public List<UserEntity> getAllUsers() {
         return this.users;
     }
+
+    @Override
+    public UserEntity getUserById(int id) {
+        for (UserEntity userEntity : users) {
+            if (userEntity.getId() == id)
+                return userEntity;
+        }
+        return null;
+    }
+
+    @Override
+    public UserEntity getUserByFirstName(String userFirstName) {
+        for (UserEntity userEntity : users) {
+            if (userEntity.getFirstName().equals(userFirstName))
+                return userEntity;
+        }
+        return null;
+    }
+
 }

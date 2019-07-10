@@ -8,4 +8,8 @@ public interface UserDao {
 
     List<UserEntity> getAllUsers();
 
+    UserEntity getUserById(int id);
+
+    UserEntity getUserByFirstName(String userFirstName);
+
 }
