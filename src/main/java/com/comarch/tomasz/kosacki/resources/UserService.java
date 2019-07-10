@@ -9,8 +9,6 @@ import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.StreamingOutput;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -71,5 +69,16 @@ public class UserService {
         userEntity.setId(UUID.randomUUID().toString());
         this.userDB.createUser(userEntity);
 
+    }
+
+    @DELETE
+    @Timed
+    @Path("/delete")
+    @Produces(MediaType.TEXT_PLAIN)
+    @Consumes({MediaType.APPLICATION_JSON})
+    public void deleteUser(UserDto user) {
+
+        System.out.println("Deleting user");
+        this.userDB.deleteUser(this.mapper.userDtoToUserEntity(user));
     }
 }

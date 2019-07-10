@@ -1,7 +1,5 @@
 package com.comarch.tomasz.kosacki.dao;
 
-import com.comarch.tomasz.kosacki.db.UserDB;
-import com.comarch.tomasz.kosacki.dto.UserDto;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 
 import java.util.List;
@@ -16,4 +14,5 @@ public interface UserDao {
 
     void createUser(UserEntity newUser);
 
+    void deleteUser(UserEntity user);
 }

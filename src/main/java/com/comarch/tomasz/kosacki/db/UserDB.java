@@ -1,7 +1,6 @@
 package com.comarch.tomasz.kosacki.db;
 
 import com.comarch.tomasz.kosacki.dao.UserDao;
-import com.comarch.tomasz.kosacki.dto.UserDto;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 
 import java.util.ArrayList;
@@ -49,5 +48,9 @@ public class UserDB implements UserDao {
         this.users.add(newUser);
     }
 
+    @Override
+    public void deleteUser(UserEntity user) {
+        this.users.remove(user);
+    }
 
 }
