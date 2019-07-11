@@ -26,8 +26,9 @@ public class UserDB implements UserDao {
     @Override
     public UserEntity getUserById(String userId) {
         for (UserEntity userEntity : users) {
-            if (userEntity.getId().equals(userId))
+            if (userEntity.getId().equals(userId)) {
                 return userEntity;
+            }
         }
         return null;
     }
@@ -37,8 +38,9 @@ public class UserDB implements UserDao {
 
         List<UserEntity> userEntityList = new ArrayList<>();
         for (UserEntity userEntity : users) {
-            if (userEntity.getFirstName().equals(userFirstName))
+            if (userEntity.getFirstName().equals(userFirstName)) {
                 userEntityList.add(userEntity);
+            }
         }
         return userEntityList;
     }

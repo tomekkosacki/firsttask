@@ -1,11 +1,12 @@
 package com.comarch.tomasz.kosacki.resources;
 
-
 import com.codahale.metrics.annotation.Timed;
 import com.comarch.tomasz.kosacki.db.UserDB;
 import com.comarch.tomasz.kosacki.dto.UserDto;
 import com.comarch.tomasz.kosacki.mapper.Mapper;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -19,6 +20,8 @@ public class UserService {
     private UserDB userDB;
     private Mapper mapper;
 
+    private Logger log = LoggerFactory.getLogger(getClass());
+
     public UserService() {
         this.userDB = new UserDB();
         this.mapper = new Mapper();
@@ -30,29 +33,30 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     public List<UserDto> getAllUsers() {
 
-        System.out.println("Read all users");
+        log.info("Read all users");
         return this.mapper.userEntityListToUserDtoList(this.userDB.getAllUsers());
     }
 
     @GET
     @Timed
-    @Path("/get/{id}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public UserDto getUserById(@PathParam("id") String userId) {
 
-        System.out.println("Read user by id: " + userId);
-        if (this.userDB.getUserById(userId) != null)
+        log.info("Read user by id: {}", userId);
+        if (this.userDB.getUserById(userId) != null) {
             return this.mapper.userEntityToUserDto(this.userDB.getUserById(userId));
+        }
         return null;
     }
 
     @GET
     @Timed
-    @Path("/get/name/{name}")
+    @Path("/name/{name}")
     @Produces(MediaType.APPLICATION_JSON)
     public List<UserDto> getUserByName(@PathParam("name") String userName) {
 
-        System.out.println("Read user by name: " + userName);
+        log.info("Read user by name: {}", userName);
         return this.mapper.userEntityListToUserDtoList(this.userDB.getUserByFirstName(userName));
     }
 
@@ -63,7 +67,7 @@ public class UserService {
     @Consumes({MediaType.APPLICATION_JSON})
     public void createUser(UserDto newUser) {
 
-        System.out.println("Creating new user");
+        log.info("Creating new user");
         UserEntity userEntity = this.mapper.userDtoToUserEntity(newUser);
         userEntity.setCreationDate(new Date());
         userEntity.setId(UUID.randomUUID().toString());
@@ -73,12 +77,12 @@ public class UserService {
 
     @DELETE
     @Timed
-    @Path("/delete")
-    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/delete/{id}")
+    @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public void deleteUser(UserDto user) {
+    public void deleteUser(@PathParam("id") String userId) {
 
-        System.out.println("Deleting user");
-        this.userDB.deleteUser(this.mapper.userDtoToUserEntity(user));
+        log.info("Deleting user with id: {}", userId);
+        this.userDB.deleteUser(this.userDB.getUserById(userId));
     }
 }

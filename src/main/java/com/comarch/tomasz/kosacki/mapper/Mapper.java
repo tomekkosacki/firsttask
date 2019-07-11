@@ -3,7 +3,9 @@ package com.comarch.tomasz.kosacki.mapper;
 import com.comarch.tomasz.kosacki.dto.UserDto;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,24 +14,18 @@ public class Mapper {
     public UserDto userEntityToUserDto(UserEntity from) {
 
         ModelMapper modelMapper = new ModelMapper();
-        UserDto user = modelMapper.map(from, UserDto.class);
-
-        return user;
+        return modelMapper.map(from, UserDto.class);
     }
 
     public UserEntity userDtoToUserEntity(UserDto from) {
 
         ModelMapper modelMapper = new ModelMapper();
-        UserEntity user = modelMapper.map(from, UserEntity.class);
-
-        return user;
+        return modelMapper.map(from, UserEntity.class);
     }
 
     public List<UserDto> userEntityListToUserDtoList(List<UserEntity> userEntityList) {
-        List<UserDto> userDtoList = new ArrayList<>();
-        for (UserEntity userEntity : userEntityList) {
-            userDtoList.add(userEntityToUserDto(userEntity));
-        }
-        return userDtoList;
+        ModelMapper modelMapper = new ModelMapper();
+        Type listType = new TypeToken<List<UserDto>>() {}.getType();
+        return modelMapper.map(userEntityList, listType);
     }
 }
