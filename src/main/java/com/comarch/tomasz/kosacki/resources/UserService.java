@@ -17,14 +17,13 @@ import java.util.UUID;
 @Path("/users")
 public class UserService {
 
+    private Logger log = LoggerFactory.getLogger(getClass());
     private UserDB userDB;
     private Mapper mapper;
 
-    private Logger log = LoggerFactory.getLogger(getClass());
-
-    public UserService() {
-        this.userDB = new UserDB();
-        this.mapper = new Mapper();
+    public UserService(UserDB userDB, Mapper mapper) {
+        this.userDB = userDB;
+        this.mapper = mapper;
     }
 
     @GET
@@ -85,4 +84,9 @@ public class UserService {
         log.info("Deleting user with id: {}", userId);
         this.userDB.deleteUser(this.userDB.getUserById(userId));
     }
+
+//    @PUT
+//    @Timed
+//    @Path("/update/{id}")
+    
 }
