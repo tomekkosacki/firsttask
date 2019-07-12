@@ -2,6 +2,7 @@ package com.comarch.tomasz.kosacki.db;
 
 import com.comarch.tomasz.kosacki.dao.UserDao;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
+import org.mongodb.morphia.Datastore;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,8 +19,18 @@ public class UserDB implements UserDao {
         this.users.add(new UserEntity("4", "FN4", "LN4", "email4@email.com", new Date()));
     }
 
+    final Datastore datastore;
+    final UserEntity userOne = new UserEntity("1", "FN1", "LN1", "email1@email.com", new Date());
+
+    public UserDB(Datastore datastore) {
+        this.datastore = datastore;
+    }
+
+
+
     @Override
     public List<UserEntity> getAllUsers() {
+
         return this.users;
     }
 
@@ -53,6 +64,14 @@ public class UserDB implements UserDao {
     @Override
     public void deleteUser(UserEntity user) {
         this.users.remove(user);
+    }
+
+    @Override
+    public void updateUser(UserEntity user) {
+        UserEntity updatedUser = getUserById(user.getId());
+        updatedUser.setFirstName(user.getFirstName());
+        updatedUser.setLastName(user.getLastName());
+        updatedUser.setEmail(user.getEmail());
     }
 
 }

@@ -85,8 +85,12 @@ public class UserService {
         this.userDB.deleteUser(this.userDB.getUserById(userId));
     }
 
-//    @PUT
-//    @Timed
-//    @Path("/update/{id}")
-    
+    @PUT
+    @Timed
+    @Path("/update/{id}")
+    @Consumes({MediaType.APPLICATION_JSON})
+    public void updateUser(@PathParam("id") String userId) {
+
+    }
+
 }
