@@ -3,9 +3,9 @@ package com.comarch.tomasz.kosacki.dto;
 import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.NotNull;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.text.DateFormat;
 
 public class UserDto {
 
@@ -33,31 +33,32 @@ public class UserDto {
         return firstName;
     }
 
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getCreationDate() {
-        return creationDate;
-    }
-
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
 
+    public String getCreationDate() {
+        return creationDate;
+    }
+
     public void setCreationDate(Date creationDate) {
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        this.creationDate = formatter.format(creationDate); }
+        this.creationDate = formatter.format(creationDate);
+    }
 }
