@@ -3,6 +3,8 @@ package com.comarch.tomasz.kosacki.db;
 import com.comarch.tomasz.kosacki.dao.UserDao;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.UpdateOperations;
 
 import java.util.Date;
 import java.util.List;
@@ -61,12 +63,17 @@ public class UserDB implements UserDao {
     }
 
     @Override
-    public void updateUser(UserEntity user) {
+    public void updateUser(UserEntity userToUpdate) {
 
-        UserEntity updatedUser = getUserById(user.getId());
-        updatedUser.setFirstName(user.getFirstName());
-        updatedUser.setLastName(user.getLastName());
-        updatedUser.setEmail(user.getEmail());
+
+        // ogarnac jak to zrobic, bo nie dziala
+
+
+        Query<UserEntity> userEntityQuery = datastore.createQuery(UserEntity.class)
+                .field("id").equal(userToUpdate.getId());
+        UpdateOperations<UserEntity> userEntityUpdateOperations = datastore.createUpdateOperations(UserEntity.class)
+                .inc("");
+
     }
 
 }
