@@ -3,6 +3,7 @@ package com.comarch.tomasz.kosacki.db;
 import com.comarch.tomasz.kosacki.dao.UserDao;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.query.Query;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,6 +12,7 @@ import java.util.List;
 public class UserDB implements UserDao {
 
     private List<UserEntity> users = new ArrayList<>();
+    private Datastore datastore;
 
     public UserDB() {
         this.users.add(new UserEntity("1", "FN1", "LN1", "email1@email.com", new Date()));
@@ -19,51 +21,55 @@ public class UserDB implements UserDao {
         this.users.add(new UserEntity("4", "FN4", "LN4", "email4@email.com", new Date()));
     }
 
-    final Datastore datastore;
-    final UserEntity userOne = new UserEntity("1", "FN1", "LN1", "email1@email.com", new Date());
-
     public UserDB(Datastore datastore) {
         this.datastore = datastore;
+        initializeDB(); // do usuniecia
     }
 
-
+    //do usuniecia
+    public void initializeDB() {
+        datastore.save(new UserEntity("1", "FN1", "LN1", "email1@email.com", new Date()));
+        datastore.save(new UserEntity("2", "FN1", "LN2", "email2@email.com", new Date()));
+    }
 
     @Override
     public List<UserEntity> getAllUsers() {
 
-        return this.users;
+        List<UserEntity> userEntityList = datastore.createQuery(UserEntity.class)
+                .asList();
+        return userEntityList;
     }
 
     @Override
     public UserEntity getUserById(String userId) {
-        for (UserEntity userEntity : users) {
-            if (userEntity.getId().equals(userId)) {
-                return userEntity;
-            }
-        }
-        return null;
+
+        UserEntity userEntity = datastore.createQuery(UserEntity.class)
+                .field("id").equal(userId)
+                .get();
+
+        return userEntity;
     }
 
     @Override
     public List<UserEntity> getUserByFirstName(String userFirstName) {
 
-        List<UserEntity> userEntityList = new ArrayList<>();
-        for (UserEntity userEntity : users) {
-            if (userEntity.getFirstName().equals(userFirstName)) {
-                userEntityList.add(userEntity);
-            }
-        }
+        List<UserEntity> userEntityList = datastore.createQuery(UserEntity.class)
+                .field("firstName").equal(userFirstName)
+                .asList();
         return userEntityList;
     }
 
     @Override
     public void createUser(UserEntity newUser) {
-        this.users.add(newUser);
+        this.datastore.save(newUser);
     }
 
     @Override
-    public void deleteUser(UserEntity user) {
-        this.users.remove(user);
+    public void deleteUser(UserEntity userToDelete) {
+        UserEntity user = datastore.createQuery(UserEntity.class)
+                .field("id").equal(userToDelete.getId())
+                .get();
+        this.datastore.delete(user);
     }
 
     @Override

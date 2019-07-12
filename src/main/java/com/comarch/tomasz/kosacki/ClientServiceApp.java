@@ -27,12 +27,9 @@ public class ClientServiceApp extends Application<ProjectConfiguration> {
         final Datastore datastore = morphia.createDatastore(mongoClient, "morphia_user");
         datastore.ensureIndexes();
 
-//        final UserEntity userOne = new UserEntity("1", "FN1", "LN1", "email1@email.com", new Date());
-//        final UserEntity userTwo = new UserEntity("4", "FN1", "LN2", "email2@email.com", new Date());
-//        datastore.save(userOne);
-//        datastore.save(userTwo);
-
-        final UserService personService = new UserService(new UserDB(datastore), new Mapper());
+        UserDB userDB = new UserDB(datastore);
+        Mapper mapper = new Mapper();
+        final UserService personService = new UserService(userDB, mapper);
         environment.jersey().register(personService);
     }
 }
