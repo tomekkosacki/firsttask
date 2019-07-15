@@ -6,11 +6,9 @@ import java.util.List;
 
 public interface UserDao {
 
-    List<UserEntity> getAllUsers();
-
     UserEntity getUserById(String userId);
 
-    List<UserEntity> getUserByFirstName(String userFirstName);
+    List<UserEntity> getUserBy(String userId, String userFirstName, String userLastName, String userEmail, int offset, int limit, String sortBy);
 
     void createUser(UserEntity newUser);
 

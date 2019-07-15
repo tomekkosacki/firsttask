@@ -3,9 +3,11 @@ package com.comarch.tomasz.kosacki.db;
 import com.comarch.tomasz.kosacki.dao.UserDao;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.query.Criteria;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,14 +23,7 @@ public class UserDB implements UserDao {
     //do usuniecia
     private void initializeDB() {
         datastore.save(new UserEntity("1", "FN1", "LN1", "email1@email.com", new Date()));
-        datastore.save(new UserEntity("2", "FN1", "LN2", "email2@email.com", new Date()));
-    }
-
-    @Override
-    public List<UserEntity> getAllUsers() {
-
-        return datastore.createQuery(UserEntity.class)
-                .asList();
+        datastore.save(new UserEntity("2", "FN1", "LN1", "email2@email.com", new Date()));
     }
 
     @Override
@@ -40,10 +35,34 @@ public class UserDB implements UserDao {
     }
 
     @Override
-    public List<UserEntity> getUserByFirstName(String userFirstName) {
+    public List<UserEntity> getUserBy(String userId, String userFirstName, String userLastName, String userEmail, int offset, int limit, String sortBy) {
 
-        return datastore.createQuery(UserEntity.class)
-                .field("firstName").equal(userFirstName)
+        List<Criteria> criteriaList = new ArrayList<>();
+        Query<UserEntity> query = datastore.createQuery(UserEntity.class);
+
+        if (userId != null) {
+            criteriaList.add(query.criteria("id").equal(userId));
+        }
+        if (userFirstName != null) {
+            criteriaList.add(query.criteria("firstName").equal(userFirstName));
+        }
+        if (userLastName != null) {
+            criteriaList.add(query.criteria("lastName").equal(userLastName));
+        }
+        if (userEmail != null) {
+            criteriaList.add(query.criteria("email").equal(userEmail));
+        }
+        query.and(criteriaList.toArray(new Criteria[criteriaList.size()]));
+        if (sortBy != null) {
+            return query.order(sortBy)
+                    .offset(offset)
+                    .limit(limit)
+                    .asList();
+
+        }
+        return query.order()
+                .offset(offset)
+                .limit(limit)
                 .asList();
     }
 

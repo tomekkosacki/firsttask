@@ -8,6 +8,8 @@ import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Date;
@@ -28,16 +30,6 @@ public class UserService {
 
     @GET
     @Timed
-    @Path("/all")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<UserDto> getAllUsers() {
-
-        log.info("Read all users");
-        return this.mapper.userEntityListToUserDtoList(this.userDB.getAllUsers());
-    }
-
-    @GET
-    @Timed
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public UserDto getUserById(@PathParam("id") String userId) {
@@ -51,12 +43,18 @@ public class UserService {
 
     @GET
     @Timed
-    @Path("/name/{name}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<UserDto> getUserByName(@PathParam("name") String userName) {
+    public List<UserDto> getUserBy(@QueryParam("id") String userId,
+                                   @QueryParam("firstName") String userFirstName,
+                                   @QueryParam("lastName") String userLastName,
+                                   @QueryParam("email") String userEmail,
+                                   @QueryParam("offset") int offset,
+                                   @QueryParam("limit") int limit,
+                                   @QueryParam("sortBy") String sortBy) {
 
-        log.info("Read user by name: {}", userName);
-        return this.mapper.userEntityListToUserDtoList(this.userDB.getUserByFirstName(userName));
+        String logMessage = userFirstName + " " + userLastName + " " + userEmail;
+        log.info("Read user by : {}", logMessage);
+        return this.mapper.userEntityListToUserDtoList(this.userDB.getUserBy(userId, userFirstName, userLastName, userEmail, offset, limit, sortBy));
     }
 
     @POST
@@ -64,7 +62,7 @@ public class UserService {
     @Path("/add")
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes({MediaType.APPLICATION_JSON})
-    public void createUser(UserDto newUser) {
+    public void createUser(@NotNull @Valid UserDto newUser) {
 
         log.info("Creating new user");
         UserEntity userEntity = this.mapper.userDtoToUserEntity(newUser);
@@ -79,7 +77,7 @@ public class UserService {
     @Path("/delete/{id}")
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public void deleteUser(@PathParam("id") String userId) {
+    public void deleteUser(@NotNull @PathParam("id") String userId) {
 
         log.info("Deleting user with id: {}", userId);
         this.userDB.deleteUser(this.userDB.getUserById(userId));
@@ -89,7 +87,7 @@ public class UserService {
     @Timed
     @Path("/update/{id}")
     @Consumes({MediaType.APPLICATION_JSON})
-    public void updateUser(@PathParam("id") String userId) {
+    public void updateUser(@PathParam("id") String userId, @NotNull UserDto userDto) {
 
     }
 

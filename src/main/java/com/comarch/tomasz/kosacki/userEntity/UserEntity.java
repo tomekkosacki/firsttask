@@ -2,6 +2,7 @@ package com.comarch.tomasz.kosacki.userEntity;
 
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Indexed;
 
 import java.util.Date;
 
@@ -9,9 +10,11 @@ import java.util.Date;
 public class UserEntity {
 
     @Id
+    @Indexed(unique = true)
     private String id;
     private String firstName;
     private String lastName;
+    @Indexed(unique = true)
     private String email;
     private Date creationDate;
 
