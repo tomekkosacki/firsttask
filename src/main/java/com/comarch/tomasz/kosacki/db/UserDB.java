@@ -5,7 +5,6 @@ import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.Criteria;
 import org.mongodb.morphia.query.Query;
-import org.mongodb.morphia.query.UpdateOperations;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -84,15 +83,12 @@ public class UserDB implements UserDao {
     @Override
     public void updateUser(UserEntity userToUpdate) {
 
+//         ogarnac jak to zrobic, bo nie dziala
 
-        // ogarnac jak to zrobic, bo nie dziala
-
-
-        Query<UserEntity> userEntityQuery = datastore.createQuery(UserEntity.class)
-                .field("id").equal(userToUpdate.getId());
-        UpdateOperations<UserEntity> userEntityUpdateOperations = datastore.createUpdateOperations(UserEntity.class)
-                .inc("");
-
+//        Query<UserEntity> userEntityQuery = datastore.createQuery(UserEntity.class)
+//                .field("id").equal(userToUpdate.getId());
+//        UpdateOperations<UserEntity> userEntityUpdateOperations = datastore.createUpdateOperations(UserEntity.class);
+//                userEntityUpdateOperations.set("");
     }
 
 }
