@@ -2,6 +2,7 @@ package com.comarch.tomasz.kosacki;
 
 import com.comarch.tomasz.kosacki.configurationClass.ProjectConfiguration;
 import com.comarch.tomasz.kosacki.db.UserDB;
+import com.comarch.tomasz.kosacki.health.ServiceHealthCheck;
 import com.comarch.tomasz.kosacki.mapper.Mapper;
 import com.comarch.tomasz.kosacki.resources.UserService;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
@@ -31,5 +32,7 @@ public class ClientServiceApp extends Application<ProjectConfiguration> {
         Mapper mapper = new Mapper();
         final UserService personService = new UserService(userDB, mapper);
         environment.jersey().register(personService);
+
+        environment.healthChecks().register("ServiceHealthCheck", new ServiceHealthCheck(datastore));
     }
 }
