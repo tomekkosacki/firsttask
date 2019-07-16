@@ -14,7 +14,6 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.net.URI;
 import java.util.Date;
 import java.util.UUID;
 
@@ -74,8 +73,8 @@ public class UserService {
             userEntity.setCreationDate(new Date());
             userEntity.setId(UUID.randomUUID().toString());
             this.userDB.createUser(userEntity);
-            return Response.created(URI.create("/users/" + userEntity.getId())).build(); // cos nie dziala ten response
-        } catch ( DuplicateKeyException ex) {
+            return Response.ok().build();
+        } catch (DuplicateKeyException ex) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
@@ -87,21 +86,34 @@ public class UserService {
     @Path("/delete/{id}")
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public void deleteUser(@NotNull @PathParam("id") String userId) {
+    public Response deleteUser(@NotNull @PathParam("id") String userId) {
 
         log.info("Deleting user with id: {}", userId);
-        this.userDB.deleteUser(this.userDB.getUserById(userId));
+        if (this.userDB.getUserById(userId) != null) {
+            this.userDB.deleteUser(this.userDB.getUserById(userId));
+            return Response.ok().build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
     @PUT
     @Timed
     @Path("/update/{id}")
+    @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public void updateUser(@NotNull @PathParam("id") String userId, @Valid UserDto updatedUser) {
+    public Response updateUser(@NotNull @PathParam("id") String userId, @Valid @NotNull UserDto updatedValue) {
 
         log.info("Updating user with id: {}", userId);
+        if (this.userDB.getUserById(userId) != null) {
+            try {
+                this.userDB.updateUser(userId, this.mapper.userDtoToUserEntity(updatedValue));
+                return Response.ok().build();
+            } catch (DuplicateKeyException ex) {
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
 
-//        this.userDB.updateUser(this.userDB.getUserById(userId), this.mapper.userDtoToUserEntity(updatedUser));
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
 }

@@ -6,7 +6,6 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Mapper {
@@ -25,7 +24,8 @@ public class Mapper {
 
     public List<UserDto> userEntityListToUserDtoList(List<UserEntity> userEntityList) {
         ModelMapper modelMapper = new ModelMapper();
-        Type listType = new TypeToken<List<UserDto>>() {}.getType();
+        Type listType = new TypeToken<List<UserDto>>() {
+        }.getType();
         return modelMapper.map(userEntityList, listType);
     }
 }

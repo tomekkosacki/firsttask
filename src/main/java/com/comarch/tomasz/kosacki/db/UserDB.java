@@ -81,14 +81,13 @@ public class UserDB implements UserDao {
     }
 
     @Override
-    public void updateUser(UserEntity userToUpdate) {
+    public void updateUser(String userIdToUpdate, UserEntity updatedValue) {
 
-//         ogarnac jak to zrobic, bo nie dziala
+        Query query = this.datastore.createQuery(UserEntity.class).field("id").equal(userIdToUpdate);
+        this.datastore.update(query, this.datastore.createUpdateOperations(UserEntity.class).set("email", updatedValue.getEmail()));
+        this.datastore.update(query, this.datastore.createUpdateOperations(UserEntity.class).set("firstName", updatedValue.getFirstName()));
+        this.datastore.update(query, this.datastore.createUpdateOperations(UserEntity.class).set("lastName", updatedValue.getLastName()));
 
-//        Query<UserEntity> userEntityQuery = datastore.createQuery(UserEntity.class)
-//                .field("id").equal(userToUpdate.getId());
-//        UpdateOperations<UserEntity> userEntityUpdateOperations = datastore.createUpdateOperations(UserEntity.class);
-//                userEntityUpdateOperations.set("");
     }
 
 }

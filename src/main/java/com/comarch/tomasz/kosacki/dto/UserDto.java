@@ -1,19 +1,20 @@
 package com.comarch.tomasz.kosacki.dto;
 
 import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class UserDto {
+public class UserDto implements Serializable {
 
-    @NotNull
+    @NotEmpty
     private String firstName;
-    @NotNull
+    @NotEmpty
     private String lastName;
-    @NotNull
+    @NotEmpty
     @Email
     private String email;
     private String creationDate;
