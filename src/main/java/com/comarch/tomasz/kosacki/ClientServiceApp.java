@@ -33,6 +33,6 @@ public class ClientServiceApp extends Application<ProjectConfiguration> {
         final UserService personService = new UserService(userDB, mapper);
         environment.jersey().register(personService);
 
-        environment.healthChecks().register("ServiceHealthCheck", new ServiceHealthCheck(datastore));
+        environment.healthChecks().register("ServiceHealthCheck", new ServiceHealthCheck(mongoClient));
     }
 }

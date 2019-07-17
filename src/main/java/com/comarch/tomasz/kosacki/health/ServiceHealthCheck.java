@@ -1,19 +1,24 @@
 package com.comarch.tomasz.kosacki.health;
 
 import com.codahale.metrics.health.HealthCheck;
-import org.mongodb.morphia.Datastore;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientException;
 
 public class ServiceHealthCheck extends HealthCheck {
 
-    private Datastore datastore;
+    private MongoClient mongoClient;
 
-    public ServiceHealthCheck(Datastore datastore) {
-        this.datastore = datastore;
+    public ServiceHealthCheck(MongoClient mongoClient) {
+        this.mongoClient = mongoClient;
     }
 
     @Override
     protected Result check() throws Exception {
-
+        try {
+            mongoClient.getDB("morphia_user").getStats();
+        } catch (MongoClientException ex) {
+            return Result.unhealthy(ex.getMessage());
+        }
         return Result.healthy();
     }
 }

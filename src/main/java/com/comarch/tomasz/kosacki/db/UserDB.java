@@ -51,7 +51,7 @@ public class UserDB implements UserDao {
         if (userEmail != null) {
             criteriaList.add(query.criteria("email").equal(userEmail));
         }
-        query.and(criteriaList.toArray(new Criteria[criteriaList.size()]));
+        query.and(criteriaList.toArray(new Criteria[0]));
         if (sortBy != null) {
             return query.order(sortBy)
                     .offset(offset)
