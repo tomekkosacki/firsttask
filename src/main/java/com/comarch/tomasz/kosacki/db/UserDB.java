@@ -4,6 +4,7 @@ import com.comarch.tomasz.kosacki.dao.UserDao;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.Criteria;
+import org.mongodb.morphia.query.FindOptions;
 import org.mongodb.morphia.query.Query;
 
 import java.util.ArrayList;
@@ -54,15 +55,15 @@ public class UserDB implements UserDao {
         query.and(criteriaList.toArray(new Criteria[0]));
         if (sortBy != null) {
             return query.order(sortBy)
-                    .offset(offset)
-                    .limit(limit)
-                    .asList();
+                    .asList(new FindOptions()
+                            .skip(offset)
+                            .limit(limit));
 
         }
         return query.order()
-                .offset(offset)
-                .limit(limit)
-                .asList();
+                .asList(new FindOptions()
+                        .skip(offset)
+                        .limit(limit));
     }
 
     @Override
