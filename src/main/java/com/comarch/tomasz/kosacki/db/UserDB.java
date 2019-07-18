@@ -8,7 +8,6 @@ import org.mongodb.morphia.query.FindOptions;
 import org.mongodb.morphia.query.Query;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class UserDB implements UserDao {
@@ -17,13 +16,6 @@ public class UserDB implements UserDao {
 
     public UserDB(Datastore datastore) {
         this.datastore = datastore;
-        initializeDB(); // do usuniecia
-    }
-
-    //do usuniecia
-    private void initializeDB() {
-        datastore.save(new UserEntity("1", "FN1", "LN1", "email1@email.com", new Date()));
-        datastore.save(new UserEntity("2", "FN1", "LN1", "email2@email.com", new Date()));
     }
 
     @Override

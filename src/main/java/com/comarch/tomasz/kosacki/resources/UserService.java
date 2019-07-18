@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.comarch.tomasz.kosacki.db.UserDB;
 import com.comarch.tomasz.kosacki.dto.UserDto;
 import com.comarch.tomasz.kosacki.mapper.Mapper;
+import com.comarch.tomasz.kosacki.servisExceptions.AppException;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import com.mongodb.DuplicateKeyException;
 import org.slf4j.Logger;
@@ -51,13 +52,14 @@ public class UserService {
                               @QueryParam("email") String userEmail,
                               @QueryParam("offset") int offset,
                               @QueryParam("limit") int limit,
-                              @QueryParam("sortBy") String sortBy) {
+                              @QueryParam("sortBy") String sortBy) throws AppException {
 
         log.info("Read user by");
         if (!(this.userDB.getUserBy(userId, userFirstName, userLastName, userEmail, offset, limit, sortBy)).isEmpty()) {
             return Response.ok(this.mapper.userEntityListToUserDtoList(this.userDB.getUserBy(userId, userFirstName, userLastName, userEmail, offset, limit, sortBy))).build();
         }
-        return Response.status(Response.Status.NOT_FOUND).build();
+//        return Response.status(Response.Status.NOT_FOUND).build();
+        throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 404, "User not found in database");
     }
 
     @POST
@@ -65,18 +67,22 @@ public class UserService {
     @Path("/add")
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes({MediaType.APPLICATION_JSON})
-    public Response createUser(@NotNull @Valid UserDto newUser) {
+    public Response createUser(@NotNull @Valid UserDto newUser) throws AppException {
 
         log.info("Creating new user");
+        UserEntity userEntity = this.mapper.userDtoToUserEntity(newUser);
+        userEntity.setCreationDate(new Date());
         try {
-            UserEntity userEntity = this.mapper.userDtoToUserEntity(newUser);
-            userEntity.setCreationDate(new Date());
             userEntity.setId(UUID.randomUUID().toString());
-            this.userDB.createUser(userEntity);
-            return Response.ok().build();
         } catch (DuplicateKeyException ex) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            throw new AppException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), 500, "User ID error");
         }
+        try {
+            this.userDB.createUser(userEntity);
+        } catch (DuplicateKeyException ex) {
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), 400, "Email already exist in database");
+        }
+        return Response.ok().build();
 
 
     }
@@ -86,14 +92,14 @@ public class UserService {
     @Path("/delete/{id}")
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public Response deleteUser(@NotNull @PathParam("id") String userId) {
+    public Response deleteUser(@NotNull @PathParam("id") String userId) throws AppException {
 
         log.info("Deleting user with id: {}", userId);
         if (this.userDB.getUserById(userId) != null) {
             this.userDB.deleteUser(this.userDB.getUserById(userId));
             return Response.ok().build();
         }
-        return Response.status(Response.Status.NOT_FOUND).build();
+        throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 404, "User with id: " + userId + " not found in database");
     }
 
     @PUT
@@ -101,7 +107,7 @@ public class UserService {
     @Path("/update/{id}")
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public Response updateUser(@NotNull @PathParam("id") String userId, @Valid @NotNull UserDto updatedValue) {
+    public Response updateUser(@NotNull @PathParam("id") String userId, @Valid @NotNull UserDto updatedValue) throws AppException {
 
         log.info("Updating user with id: {}", userId);
         if (this.userDB.getUserById(userId) != null) {
@@ -109,11 +115,11 @@ public class UserService {
                 this.userDB.updateUser(userId, this.mapper.userDtoToUserEntity(updatedValue));
                 return Response.ok().build();
             } catch (DuplicateKeyException ex) {
-                return Response.status(Response.Status.BAD_REQUEST).build();
+                throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), 400, "Email already exist in database");
             }
 
         }
-        return Response.status(Response.Status.NOT_FOUND).build();
+        throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 404, "User with id: " + userId + " not found in database");
     }
 
 }
