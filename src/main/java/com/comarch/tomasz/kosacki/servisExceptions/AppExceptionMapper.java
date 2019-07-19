@@ -15,5 +15,6 @@ public class AppExceptionMapper implements ExceptionMapper<AppException> {
                 .type(MediaType.APPLICATION_JSON)
                 .build();
     }
+
 }
 

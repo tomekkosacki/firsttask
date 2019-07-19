@@ -6,6 +6,9 @@ public class AppException extends Exception {
     private int code;
     private String message;
 
+    public AppException() {
+    }
+
     public AppException(int status, int code, String message) {
         super(message);
         this.status = status;

@@ -5,6 +5,9 @@ import com.comarch.tomasz.kosacki.db.UserDB;
 import com.comarch.tomasz.kosacki.dto.UserDto;
 import com.comarch.tomasz.kosacki.mapper.Mapper;
 import com.comarch.tomasz.kosacki.servisExceptions.AppException;
+import com.comarch.tomasz.kosacki.servisExceptions.DuplicateKeyExceptionEmail;
+import com.comarch.tomasz.kosacki.servisExceptions.DuplicateKeyExceptionID;
+import com.comarch.tomasz.kosacki.servisExceptions.UserEntityNotFound;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import com.mongodb.DuplicateKeyException;
 import org.slf4j.Logger;
@@ -58,8 +61,7 @@ public class UserService {
         if (!(this.userDB.getUserBy(userId, userFirstName, userLastName, userEmail, offset, limit, sortBy)).isEmpty()) {
             return Response.ok(this.mapper.userEntityListToUserDtoList(this.userDB.getUserBy(userId, userFirstName, userLastName, userEmail, offset, limit, sortBy))).build();
         }
-//        return Response.status(Response.Status.NOT_FOUND).build();
-        throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 404, "User not found in database");
+        throw new UserEntityNotFound("");
     }
 
     @POST
@@ -75,12 +77,12 @@ public class UserService {
         try {
             userEntity.setId(UUID.randomUUID().toString());
         } catch (DuplicateKeyException ex) {
-            throw new AppException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), 500, "User ID error");
+            throw new DuplicateKeyExceptionID();
         }
         try {
             this.userDB.createUser(userEntity);
         } catch (DuplicateKeyException ex) {
-            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), 400, "Email already exist in database");
+            throw new DuplicateKeyExceptionEmail();
         }
         return Response.ok().build();
 
@@ -99,7 +101,7 @@ public class UserService {
             this.userDB.deleteUser(this.userDB.getUserById(userId));
             return Response.ok().build();
         }
-        throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 404, "User with id: " + userId + " not found in database");
+        throw new UserEntityNotFound(userId);
     }
 
     @PUT
@@ -115,11 +117,11 @@ public class UserService {
                 this.userDB.updateUser(userId, this.mapper.userDtoToUserEntity(updatedValue));
                 return Response.ok().build();
             } catch (DuplicateKeyException ex) {
-                throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), 400, "Email already exist in database");
+                throw new DuplicateKeyExceptionEmail();
             }
-
         }
-        throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 404, "User with id: " + userId + " not found in database");
+        throw new UserEntityNotFound(userId);
+
     }
 
 }
