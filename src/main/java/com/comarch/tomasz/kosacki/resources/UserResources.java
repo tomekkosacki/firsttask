@@ -4,10 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.comarch.tomasz.kosacki.db.UserDB;
 import com.comarch.tomasz.kosacki.dto.UserDto;
 import com.comarch.tomasz.kosacki.mapper.Mapper;
-import com.comarch.tomasz.kosacki.servisExceptions.AppException;
-import com.comarch.tomasz.kosacki.servisExceptions.DuplicateKeyExceptionEmail;
-import com.comarch.tomasz.kosacki.servisExceptions.DuplicateKeyExceptionID;
-import com.comarch.tomasz.kosacki.servisExceptions.UserEntityNotFound;
+import com.comarch.tomasz.kosacki.servisExceptions.*;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import com.mongodb.DuplicateKeyException;
 import org.slf4j.Logger;
@@ -22,13 +19,13 @@ import java.util.Date;
 import java.util.UUID;
 
 @Path("/users")
-public class UserService {
+public class UserResources {
 
     private Logger log = LoggerFactory.getLogger(getClass());
     private UserDB userDB;
     private Mapper mapper;
 
-    public UserService(UserDB userDB, Mapper mapper) {
+    public UserResources(UserDB userDB, Mapper mapper) {
         this.userDB = userDB;
         this.mapper = mapper;
     }
@@ -37,13 +34,15 @@ public class UserService {
     @Timed
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserById(@PathParam("id") String userId) throws AppException {
+    public  getUserById(@PathParam("id") String userId) throws AppException {
 
-        log.info("Read user by id: {}", userId);
-        if (this.userDB.getUserById(userId) != null) {
-            return Response.ok(this.mapper.userEntityToUserDto(this.userDB.getUserById(userId))).build();
-        }
-        throw new UserEntityNotFound(userId);
+//        log.info("Read user by id: {}", userId);
+//        if (this.userDB.getUserById(userId) != null) {
+//            return Response.ok(this.mapper.userEntityToUserDto(this.userDB.getUserById(userId))).build();
+//        }
+//        throw new UserEntityNotFoundException(userId);
+        return
+
     }
 
     @GET
@@ -61,32 +60,34 @@ public class UserService {
         if (!(this.userDB.getUserBy(userId, userFirstName, userLastName, userEmail, offset, limit, sortBy)).isEmpty()) {
             return Response.ok(this.mapper.userEntityListToUserDtoList(this.userDB.getUserBy(userId, userFirstName, userLastName, userEmail, offset, limit, sortBy))).build();
         }
-        throw new UserEntityNotFound("");
+        log.error("User not found");
+        throw new UserEntityNotFoundException("");
     }
 
     @POST
     @Timed
     @Path("/add")
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     @Consumes({MediaType.APPLICATION_JSON})
-    public Response createUser(@NotNull @Valid UserDto newUser) throws AppException {
+    public Response createUser(@Valid @NotNull UserDto newUser) throws AppException {
 
         log.info("Creating new user");
         UserEntity userEntity = this.mapper.userDtoToUserEntity(newUser);
         userEntity.setCreationDate(new Date());
-        try {
-            userEntity.setId(UUID.randomUUID().toString());
-        } catch (DuplicateKeyException ex) {
-            throw new DuplicateKeyExceptionID();
-        }
+
+        String newUserID;
+        do {
+            newUserID = UUID.randomUUID().toString();
+        } while (this.userDB.getUserById(newUserID) != null);
+        userEntity.setId(newUserID);
+
         try {
             this.userDB.createUser(userEntity);
         } catch (DuplicateKeyException ex) {
+            log.error("DuplicateKeyException on email");
             throw new DuplicateKeyExceptionEmail();
         }
         return Response.ok().build();
-
-
     }
 
     @DELETE
@@ -101,7 +102,8 @@ public class UserService {
             this.userDB.deleteUser(this.userDB.getUserById(userId));
             return Response.ok().build();
         }
-        throw new UserEntityNotFound(userId);
+        log.error("User not found");
+        throw new UserEntityNotFoundException(userId);
     }
 
     @PUT
@@ -117,11 +119,12 @@ public class UserService {
                 this.userDB.updateUser(userId, this.mapper.userDtoToUserEntity(updatedValue));
                 return Response.ok().build();
             } catch (DuplicateKeyException ex) {
+                log.error("DuplicateKeyException on email");
                 throw new DuplicateKeyExceptionEmail();
             }
         }
-        throw new UserEntityNotFound(userId);
-
+        log.error("User not found");
+        throw new UserEntityNotFoundException(userId);
     }
 
 }

@@ -1,6 +1,6 @@
 package com.comarch.tomasz.kosacki.servisExceptions;
 
-public class AppException extends Exception {
+public class AppException extends RuntimeException {
 
     private Integer status;
     private int code;

@@ -11,7 +11,7 @@ public class AppExceptionMapper implements ExceptionMapper<AppException> {
     @Override
     public Response toResponse(AppException exception) {
         return Response.status(exception.getStatus())
-                .entity(new ErrorMessage(exception))
+                .entity(new ExceptionMessage(exception))
                 .type(MediaType.APPLICATION_JSON)
                 .build();
     }

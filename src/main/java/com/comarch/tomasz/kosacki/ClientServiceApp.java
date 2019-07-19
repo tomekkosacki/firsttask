@@ -4,7 +4,7 @@ import com.comarch.tomasz.kosacki.configurationClass.ProjectConfiguration;
 import com.comarch.tomasz.kosacki.db.UserDB;
 import com.comarch.tomasz.kosacki.health.ServiceHealthCheck;
 import com.comarch.tomasz.kosacki.mapper.Mapper;
-import com.comarch.tomasz.kosacki.resources.UserService;
+import com.comarch.tomasz.kosacki.resources.UserResources;
 import com.comarch.tomasz.kosacki.servisExceptions.AppExceptionMapper;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import com.mongodb.MongoClient;
@@ -31,9 +31,9 @@ public class ClientServiceApp extends Application<ProjectConfiguration> {
 
         UserDB userDB = new UserDB(datastore);
         Mapper mapper = new Mapper();
-        final UserService personService = new UserService(userDB, mapper);
+        final UserResources userResources = new UserResources(userDB, mapper);
 
-        environment.jersey().register(personService);
+        environment.jersey().register(userResources);
         environment.jersey().register(new AppExceptionMapper());
         environment.healthChecks().register("ServiceHealthCheck", new ServiceHealthCheck(mongoClient));
     }

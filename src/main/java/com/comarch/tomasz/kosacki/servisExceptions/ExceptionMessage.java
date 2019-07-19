@@ -1,16 +1,20 @@
 package com.comarch.tomasz.kosacki.servisExceptions;
 
 
-public class ErrorMessage {
+import java.io.Serializable;
+
+public class ExceptionMessage implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private int status;
     private int code;
     private String message;
 
-    public ErrorMessage() {
+    public ExceptionMessage() {
     }
 
-    public ErrorMessage(AppException exception) {
+    public ExceptionMessage(AppException exception) {
         this.status = exception.getStatus();
         this.code = exception.getCode();
         this.message = exception.getMessage();
