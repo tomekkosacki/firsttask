@@ -7,10 +7,10 @@ public class ErrorMessage {
     private int code;
     private String message;
 
-    ErrorMessage() {
+    public ErrorMessage() {
     }
 
-    ErrorMessage(AppException exception) {
+    public ErrorMessage(AppException exception) {
         this.status = exception.getStatus();
         this.code = exception.getCode();
         this.message = exception.getMessage();

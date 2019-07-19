@@ -37,13 +37,13 @@ public class UserService {
     @Timed
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserById(@PathParam("id") String userId) {
+    public Response getUserById(@PathParam("id") String userId) throws AppException {
 
         log.info("Read user by id: {}", userId);
         if (this.userDB.getUserById(userId) != null) {
             return Response.ok(this.mapper.userEntityToUserDto(this.userDB.getUserById(userId))).build();
         }
-        return Response.status(Response.Status.NOT_FOUND).build();
+        throw new UserEntityNotFound(userId);
     }
 
     @GET
