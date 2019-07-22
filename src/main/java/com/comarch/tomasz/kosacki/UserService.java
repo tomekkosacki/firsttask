@@ -25,7 +25,7 @@ public class UserService {
 
     public UserEntity getUserById(String userId) throws AppException {
 
-        UserEntity userEntity = this.userDB.getUserById(userId);
+        UserEntity userEntity = findUserById(userId);
         if (userEntity != null) {
             return userEntity;
         }
@@ -33,9 +33,9 @@ public class UserService {
         throw new UserEntityNotFoundException(userId);
     }
 
-    public List<UserEntity> getUserBy(String userId, String userFirstName, String userLastName, String userEmail, int offset, int limit, String sortBy) {
+    public List<UserEntity> getUserBy(String userId, String userFirstName, String userLastName, String userEmail, int skip, int limit, String sortBy) {
 
-        List<UserEntity> userEntityList = this.userDB.getUserBy(userId, userFirstName, userLastName, userEmail, offset, limit, sortBy);
+        List<UserEntity> userEntityList = this.userDB.getUserBy(userId, userFirstName, userLastName, userEmail, skip, limit, sortBy);
         if (!userEntityList.isEmpty()) {
             return userEntityList;
         }
@@ -49,7 +49,7 @@ public class UserService {
         String newUserID;
         do {
             newUserID = UUID.randomUUID().toString();
-        } while (this.userDB.getUserById(newUserID) != null);
+        } while (findUserById(newUserID) != null);
         newUser.setId(newUserID);
         try {
             this.userDB.createUser(newUser);
@@ -61,7 +61,7 @@ public class UserService {
 
     public void deleteUser(String userId) throws AppException {
 
-        UserEntity userToDelete = this.userDB.getUserById(userId);
+        UserEntity userToDelete = findUserById(userId);
         if (userToDelete != null) {
             this.userDB.deleteUser(userToDelete);
         } else {
@@ -72,7 +72,7 @@ public class UserService {
 
     public void updateUser(String userId, UserEntity updatedValue) throws AppException {
 
-        if (this.userDB.getUserById(userId) != null) {
+        if (findUserById(userId) != null) {
             try {
                 this.userDB.updateUser(userId, updatedValue);
             } catch (DuplicateKeyException ex) {
@@ -83,5 +83,9 @@ public class UserService {
             log.error("User not found");
             throw new UserEntityNotFoundException(userId);
         }
+    }
+
+    private UserEntity findUserById(String userId) {
+        return this.userDB.getUserById(userId);
     }
 }

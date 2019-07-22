@@ -43,12 +43,12 @@ public class UserResources {
                               @QueryParam("firstName") String userFirstName,
                               @QueryParam("lastName") String userLastName,
                               @QueryParam("email") String userEmail,
-                              @QueryParam("offset") int offset,
+                              @QueryParam("skip") int skip,
                               @QueryParam("limit") int limit,
                               @QueryParam("sortBy") String sortBy) {
 
         log.info("Read user by");
-        return Response.ok(this.mapper.userEntityListToUserDtoList(this.userService.getUserBy(userId, userFirstName, userLastName, userEmail, offset, limit, sortBy))).build();
+        return Response.ok(this.mapper.userEntityListToUserDtoList(this.userService.getUserBy(userId, userFirstName, userLastName, userEmail, skip, limit, sortBy))).build();
     }
 
     @POST

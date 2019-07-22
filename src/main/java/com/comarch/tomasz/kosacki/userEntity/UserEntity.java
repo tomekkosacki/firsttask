@@ -69,4 +69,16 @@ public class UserEntity {
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
+
+    public boolean equals(Object obj) {
+        UserEntity userEntity = (UserEntity) obj;
+        if (this.id.equals((userEntity.getId()))
+                && this.firstName.equals(userEntity.getFirstName())
+                && this.lastName.equals(userEntity.getLastName())
+                && this.email.equals(userEntity.getEmail())
+                && this.creationDate.equals(userEntity.getCreationDate())) {
+            return true;
+        }
+        return false;
+    }
 }

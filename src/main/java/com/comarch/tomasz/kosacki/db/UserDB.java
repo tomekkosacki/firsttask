@@ -15,6 +15,7 @@ public class UserDB implements UserDao {
     private Datastore datastore;
 
     public UserDB(Datastore datastore) {
+
         this.datastore = datastore;
     }
 
@@ -27,7 +28,7 @@ public class UserDB implements UserDao {
     }
 
     @Override
-    public List<UserEntity> getUserBy(String userId, String userFirstName, String userLastName, String userEmail, int offset, int limit, String sortBy) {
+    public List<UserEntity> getUserBy(String userId, String userFirstName, String userLastName, String userEmail, int skip, int limit, String sortBy) {
 
         List<Criteria> criteriaList = new ArrayList<>();
         Query<UserEntity> query = datastore.createQuery(UserEntity.class);
@@ -48,13 +49,13 @@ public class UserDB implements UserDao {
         if (sortBy != null) {
             return query.order(sortBy)
                     .asList(new FindOptions()
-                            .skip(offset)
+                            .skip(skip)
                             .limit(limit));
 
         }
         return query.order()
                 .asList(new FindOptions()
-                        .skip(offset)
+                        .skip(skip)
                         .limit(limit));
     }
 
