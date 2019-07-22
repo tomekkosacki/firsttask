@@ -31,7 +31,8 @@ public class ClientServiceApp extends Application<ProjectConfiguration> {
 
         UserDB userDB = new UserDB(datastore);
         Mapper mapper = new Mapper();
-        final UserResources userResources = new UserResources(userDB, mapper);
+        UserService userService = new UserService(userDB);
+        final UserResources userResources = new UserResources(mapper, userService);
 
         environment.jersey().register(userResources);
         environment.jersey().register(new AppExceptionMapper());
