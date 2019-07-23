@@ -5,10 +5,12 @@ import com.comarch.tomasz.kosacki.UserService;
 import com.comarch.tomasz.kosacki.dto.UserDto;
 import com.comarch.tomasz.kosacki.mapper.Mapper;
 import com.comarch.tomasz.kosacki.servisExceptions.AppException;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -30,7 +32,7 @@ public class UserResources {
     @Timed
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserById(@PathParam("id") String userId) {
+    public Response getUserById(@PathParam("id") @NotEmpty String userId) {
 
         log.info("Get user by id: {}", userId);
         return Response.ok(this.mapper.userEntityToUserDto(this.userService.getUserById(userId))).build();
@@ -43,8 +45,8 @@ public class UserResources {
                               @QueryParam("firstName") String userFirstName,
                               @QueryParam("lastName") String userLastName,
                               @QueryParam("email") String userEmail,
-                              @QueryParam("skip") int skip,
-                              @QueryParam("limit") int limit,
+                              @QueryParam("skip") @Min(0) @DefaultValue("0") int skip,
+                              @QueryParam("limit") @Min(0) @DefaultValue("0") int limit,
                               @QueryParam("sortBy") String sortBy) {
 
         log.info("Read user by");

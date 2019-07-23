@@ -3,6 +3,7 @@ package com.comarch.tomasz.kosacki;
 import com.comarch.tomasz.kosacki.db.UserDB;
 import com.comarch.tomasz.kosacki.servisExceptions.AppException;
 import com.comarch.tomasz.kosacki.servisExceptions.DuplicateKeyExceptionEmail;
+import com.comarch.tomasz.kosacki.servisExceptions.NotNullArgumentException;
 import com.comarch.tomasz.kosacki.servisExceptions.UserEntityNotFoundException;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import com.mongodb.DuplicateKeyException;
@@ -25,6 +26,10 @@ public class UserService {
 
     public UserEntity getUserById(String userId) throws AppException {
 
+        if (userId == null) {
+            log.error("UserID is null");
+            throw new NotNullArgumentException();
+        }
         UserEntity userEntity = findUserById(userId);
         if (userEntity != null) {
             return userEntity;
@@ -61,6 +66,10 @@ public class UserService {
 
     public void deleteUser(String userId) throws AppException {
 
+        if (userId == null) {
+            log.error("Id can not be null");
+            throw new NotNullArgumentException();
+        }
         UserEntity userToDelete = findUserById(userId);
         if (userToDelete != null) {
             this.userDB.deleteUser(userToDelete);
@@ -72,6 +81,10 @@ public class UserService {
 
     public void updateUser(String userId, UserEntity updatedValue) throws AppException {
 
+        if (userId == null) {
+            log.error("UserID is null");
+            throw new NotNullArgumentException();
+        }
         if (findUserById(userId) != null) {
             try {
                 this.userDB.updateUser(userId, updatedValue);
