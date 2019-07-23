@@ -3,7 +3,7 @@ package com.comarch.tomasz.kosacki;
 import com.comarch.tomasz.kosacki.db.UserDB;
 import com.comarch.tomasz.kosacki.servisExceptions.AppException;
 import com.comarch.tomasz.kosacki.servisExceptions.DuplicateKeyExceptionEmail;
-import com.comarch.tomasz.kosacki.servisExceptions.NotNullArgumentException;
+import com.comarch.tomasz.kosacki.servisExceptions.NullArgumentException;
 import com.comarch.tomasz.kosacki.servisExceptions.UserEntityNotFoundException;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import com.mongodb.DuplicateKeyException;
@@ -28,7 +28,7 @@ public class UserService {
 
         if (userId == null) {
             log.error("UserID is null");
-            throw new NotNullArgumentException();
+            throw new NullArgumentException();
         }
         UserEntity userEntity = findUserById(userId);
         if (userEntity != null) {
@@ -68,7 +68,7 @@ public class UserService {
 
         if (userId == null) {
             log.error("Id can not be null");
-            throw new NotNullArgumentException();
+            throw new NullArgumentException();
         }
         UserEntity userToDelete = findUserById(userId);
         if (userToDelete != null) {
@@ -83,7 +83,7 @@ public class UserService {
 
         if (userId == null) {
             log.error("UserID is null");
-            throw new NotNullArgumentException();
+            throw new NullArgumentException();
         }
         if (findUserById(userId) != null) {
             try {

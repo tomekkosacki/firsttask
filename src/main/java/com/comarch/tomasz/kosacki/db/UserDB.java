@@ -77,11 +77,11 @@ public class UserDB implements UserDao {
     @Override
     public void updateUser(String userIdToUpdate, UserEntity updatedValue) {
 
+
         Query query = this.datastore.createQuery(UserEntity.class).field("id").equal(userIdToUpdate);
         this.datastore.update(query, this.datastore.createUpdateOperations(UserEntity.class).set("email", updatedValue.getEmail()));
         this.datastore.update(query, this.datastore.createUpdateOperations(UserEntity.class).set("firstName", updatedValue.getFirstName()));
         this.datastore.update(query, this.datastore.createUpdateOperations(UserEntity.class).set("lastName", updatedValue.getLastName()));
-
     }
 
 }

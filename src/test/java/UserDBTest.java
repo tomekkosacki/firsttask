@@ -40,7 +40,7 @@ public class UserDBTest {
     }
 
     @Test
-    public void getUserByIdForEmptyDB() {
+    public void getUserByIdFromEmptyDB() {
 
         assertNull(testObject.getUserById("1"));
     }
@@ -86,7 +86,7 @@ public class UserDBTest {
     }
 
     @Test
-    public void createUserTest() {
+    public void createUserSuccesfulScenario() {
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
         userEntityList.add(tempUserEntity1);
         testObject.createUser(tempUserEntity1);
@@ -103,6 +103,18 @@ public class UserDBTest {
             thrown = true;
         }
         Assert.assertTrue(thrown);
+    }
+
+
+//    Czy opłaca się to sprawdzać, gdy post, majac takie samo id to robi update starego uzytkownika
+    @Test
+    public void createUserWhenAlreadyExsist() {
+        UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
+        UserEntity tempUserEntity2 = new UserEntity("1", "Jan", "Kowalski", "nowak@mail.com", new Date());
+        userEntityList.add(tempUserEntity1);
+        testObject.createUser(tempUserEntity2);
+        Assert.assertNotEquals(userEntityList, datastore.createQuery(UserEntity.class).asList());
+
     }
 
     @Test
@@ -141,7 +153,33 @@ public class UserDBTest {
     }
 
     @Test
-    public void updateUser() {
+    public void updateUserSuccesfulScenario() {
+        UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
+        UserEntity tempUserEntity1UpdatedValue = tempUserEntity1;
+        tempUserEntity1.setLastName("Kowalski");
+        datastore.save(tempUserEntity1);
+        testObject.updateUser("1", tempUserEntity1UpdatedValue);
+        Assert.assertEquals(tempUserEntity1UpdatedValue, datastore.createQuery(UserEntity.class)
+                .field("id").equal("1")
+                .get());
+    }
 
+    @Test
+    public void updateUserUserNotFound() {
+        UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
+        testObject.updateUser("1", tempUserEntity1);
+    }
+
+    @Test
+    public void updateUserWithNullArgument() {
+        UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
+        boolean thrown =false;
+        datastore.save(tempUserEntity1);
+        try {
+            testObject.updateUser("1", null);
+        } catch (NullPointerException ex) {
+            thrown = true;
+        }
+        Assert.assertTrue(thrown);
     }
 }
