@@ -90,12 +90,19 @@ public class UserDBTest {
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
         userEntityList.add(tempUserEntity1);
         testObject.createUser(tempUserEntity1);
-        Assert.assertEquals(userEntityList, testObject.getUserBy(null, null, null, null, 0, 0, null));
+        Assert.assertEquals(userEntityList, datastore.createQuery(UserEntity.class).asList());
+
     }
 
-    @Test(expected = UpdateException.class)
+    @Test
     public void createUserWithNullArgument() {
-        testObject.createUser(null);
+        boolean thrown = false;
+        try {
+            testObject.createUser(null);
+        } catch (UpdateException ex) {
+            thrown = true;
+        }
+        Assert.assertTrue(thrown);
     }
 
     @Test
@@ -103,21 +110,38 @@ public class UserDBTest {
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
         datastore.save(tempUserEntity1);
         testObject.deleteUser(tempUserEntity1);
-        Assert.assertEquals(userEntityList, testObject.getUserBy(null, null, null, null, 0, 0, null));
+        Assert.assertEquals(userEntityList, datastore.createQuery(UserEntity.class).asList());
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void deleteUserFromDBWhenUserNotFound() {
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
         UserEntity tempUserEntity2 = new UserEntity("2", "Jan2", "Nowak2", "nowak2@mail.com", new Date());
+        boolean thrown = false;
         datastore.save(tempUserEntity1);
-        testObject.deleteUser(tempUserEntity2);
+        try {
+            testObject.deleteUser(tempUserEntity2);
+        } catch (RuntimeException ex) {
+            thrown = true;
+        }
+        Assert.assertTrue(thrown);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void deleteUserFromDBWithNullArgument() {
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
+        boolean thrown = false;
         datastore.save(tempUserEntity1);
-        testObject.deleteUser(null);
+        try {
+            testObject.deleteUser(null);
+        } catch (NullPointerException ex) {
+            thrown = true;
+        }
+        Assert.assertTrue(thrown);
+    }
+
+    @Test
+    public void updateUser() {
+
     }
 }
