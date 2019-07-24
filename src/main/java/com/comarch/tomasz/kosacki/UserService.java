@@ -29,7 +29,7 @@ public class UserService {
     public UserEntity getUserById(String userId) throws AppException {
 
         if (userId == null) {
-            log.error("UserID is null");
+            log.error("User ID can not null");
             throw new NullArgumentException();
         }
         UserEntity userEntity = findUserById(userId);
@@ -73,7 +73,7 @@ public class UserService {
     public void deleteUser(String userId) throws AppException {
 
         if (userId == null) {
-            log.error("Id can not be null");
+            log.error("User ID can not be null");
             throw new NullArgumentException();
         }
         UserEntity userToDelete = findUserById(userId);
@@ -88,7 +88,7 @@ public class UserService {
     public void updateUser(String userId, UserEntity updatedValue) throws AppException {
 
         if (userId == null || updatedValue == null) {
-            log.error("Argument is null");
+            log.error("Argument can not null");
             throw new NullArgumentException();
         }
         if (findUserById(userId) != null) {

@@ -1,8 +1,8 @@
 import com.comarch.tomasz.kosacki.UserService;
 import com.comarch.tomasz.kosacki.db.UserDB;
 import com.comarch.tomasz.kosacki.servisExceptions.AppException;
-import com.comarch.tomasz.kosacki.servisExceptions.DuplicateKeyExceptionEmail;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
+import com.mongodb.DuplicateKeyException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -94,13 +94,13 @@ public class UserServiceTest {
         testUserService.createUser(null);
     }
 
-//    @Test(expected = AppException.class)
-//    public void createUserThrowDuplicateKeyExceptionEmail() {
-//
-//        UserEntity tempUserEntity = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
-//        doThrow(DuplicateKeyExceptionEmail.class).when(userDB).createUser(any());
-//        testUserService.createUser(tempUserEntity);
-//    }
+    @Test(expected = AppException.class)
+    public void createUserThrowDuplicateKeyExceptionEmail() {
+
+        UserEntity tempUserEntity = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
+        doThrow(DuplicateKeyException.class).when(userDB).createUser(any());
+        testUserService.createUser(tempUserEntity);
+    }
 
     @Test
     public void deleteUserForValidArgument() {
@@ -141,15 +141,12 @@ public class UserServiceTest {
     public void updateUserForUserIdNullThrowNullArgumentException() {
 
         UserEntity tempUserEntity = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
-        when(userDB.getUserById(any())).thenReturn(tempUserEntity);
         testUserService.updateUser(null, tempUserEntity);
     }
 
     @Test(expected = AppException.class)
     public void updateUserForNewUserValueNullThrowNullArgumentException() {
 
-        UserEntity tempUserEntity = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
-        when(userDB.getUserById(any())).thenReturn(tempUserEntity);
         testUserService.updateUser("1", null);
     }
 
@@ -165,7 +162,7 @@ public class UserServiceTest {
 
         UserEntity tempUserEntity = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
         when(userDB.getUserById(any())).thenReturn(tempUserEntity);
-        doThrow(DuplicateKeyExceptionEmail.class).when(userDB).updateUser(any(), any());
+        doThrow(DuplicateKeyException.class).when(userDB).updateUser(any(), any());
         testUserService.updateUser("1", tempUserEntity);
     }
 }
