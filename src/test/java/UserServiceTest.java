@@ -160,10 +160,11 @@ public class UserServiceTest {
         testUserService.updateUser("1", tempUserEntity);
     }
 
-    @Test//(expected = AppException.class)
+    @Test(expected = AppException.class)
     public void updateUserThrowDuplicateKeyExceptionEmail() {
 
         UserEntity tempUserEntity = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
+        when(userDB.getUserById(any())).thenReturn(tempUserEntity);
         doThrow(DuplicateKeyExceptionEmail.class).when(userDB).updateUser(any(), any());
         testUserService.updateUser("1", tempUserEntity);
     }
