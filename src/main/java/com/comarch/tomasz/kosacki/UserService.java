@@ -19,6 +19,8 @@ public class UserService {
     private UserDB userDB;
     private Logger log = LoggerFactory.getLogger(getClass());
 
+    public UserService() {
+    }
 
     public UserService(UserDB userDB) {
         this.userDB = userDB;
@@ -50,6 +52,10 @@ public class UserService {
 
     public void createUser(UserEntity newUser) throws AppException {
 
+        if(newUser == null) {
+            log.error("Argument can not be null");
+            throw new NullArgumentException();
+        }
         newUser.setCreationDate(new Date());
         String newUserID;
         do {
@@ -81,8 +87,8 @@ public class UserService {
 
     public void updateUser(String userId, UserEntity updatedValue) throws AppException {
 
-        if (userId == null) {
-            log.error("UserID is null");
+        if (userId == null || updatedValue == null) {
+            log.error("Argument is null");
             throw new NullArgumentException();
         }
         if (findUserById(userId) != null) {

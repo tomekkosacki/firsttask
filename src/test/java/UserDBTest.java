@@ -1,7 +1,6 @@
 import com.comarch.tomasz.kosacki.db.UserDB;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import com.github.fakemongo.Fongo;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mongodb.morphia.Datastore;
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 public class UserDBTest {
 
@@ -22,6 +21,7 @@ public class UserDBTest {
 
     @Before
     public void init() {
+
         Morphia morphia = new Morphia();
         morphia.map(UserEntity.class);
         Fongo fongo = new Fongo("mongoTestServer");
@@ -31,102 +31,109 @@ public class UserDBTest {
     }
 
     @Test
-    public void getUserByIdForFilledDB() {
+    public void getUserByIdForFilledDbForValidArgument() {
+
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
         userEntityList.add(tempUserEntity1);
-
         datastore.save(userEntityList);
-        Assert.assertEquals(tempUserEntity1, testObject.getUserById("1"));
+        assertEquals(tempUserEntity1, testObject.getUserById("1"));
     }
 
     @Test
-    public void getUserByIdFromEmptyDB() {
+    public void getUserByIdFromEmptyDbForValidArgument() {
 
         assertNull(testObject.getUserById("1"));
     }
 
     @Test
     public void getUserByIdWithNullArgument() {
+
         assertNull(testObject.getUserById(null));
     }
 
     @Test
     public void getUserByIdWhenUserNotFound() {
+
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
         userEntityList.add(tempUserEntity1);
-
         datastore.save(userEntityList);
         assertNull(testObject.getUserById("2"));
     }
 
     @Test
-    public void getUserByGetAllForEmptyDB() {
-        Assert.assertEquals(userEntityList, testObject.getUserBy(null, null, null, null, 0, 0, null));
+    public void getUserByGetAllForEmptyDb() {
+
+        assertEquals(userEntityList, testObject.getUserBy(null, null, null, null, 0, 0, null));
     }
 
     @Test
-    public void getUserByGetAllForFilledDB() {
+    public void getUserByGetAllForFilledDb() {
+
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
         userEntityList.add(tempUserEntity1);
         datastore.save(userEntityList);
-        Assert.assertEquals(userEntityList, testObject.getUserBy(null, null, null, null, 0, 0, null));
+        assertEquals(userEntityList, testObject.getUserBy(null, null, null, null, 0, 0, null));
     }
 
     @Test
-    public void getUserByFirstNameForEmptyDB() {
-        Assert.assertEquals(userEntityList, testObject.getUserBy(null, "Jan", null, null, 0, 0, null));
+    public void getUserByFirstNameForEmptyDb() {
+
+        assertEquals(userEntityList, testObject.getUserBy(null, "Jan", null, null, 0, 0, null));
     }
 
     @Test
-    public void getUserByFirstNameForFilledDB() {
+    public void getUserByFirstNameForFilledDb() {
+
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
         userEntityList.add(tempUserEntity1);
         datastore.save(userEntityList);
-        Assert.assertEquals(userEntityList, testObject.getUserBy(null, "Jan", null, null, 0, 0, null));
+        assertEquals(userEntityList, testObject.getUserBy(null, "Jan", null, null, 0, 0, null));
     }
 
     @Test
-    public void createUserSuccesfulScenario() {
+    public void createUserForValidArgument() {
+
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
         userEntityList.add(tempUserEntity1);
         testObject.createUser(tempUserEntity1);
-        Assert.assertEquals(userEntityList, datastore.createQuery(UserEntity.class).asList());
+        assertEquals(userEntityList, datastore.createQuery(UserEntity.class).asList());
 
     }
 
     @Test
     public void createUserWithNullArgument() {
+
         boolean thrown = false;
         try {
             testObject.createUser(null);
         } catch (UpdateException ex) {
             thrown = true;
         }
-        Assert.assertTrue(thrown);
+        assertTrue(thrown);
     }
 
-
-//    Czy opłaca się to sprawdzać, gdy post, majac takie samo id to robi update starego uzytkownika
     @Test
     public void createUserWhenAlreadyExsist() {
+
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
         UserEntity tempUserEntity2 = new UserEntity("1", "Jan", "Kowalski", "nowak@mail.com", new Date());
         userEntityList.add(tempUserEntity1);
         testObject.createUser(tempUserEntity2);
-        Assert.assertNotEquals(userEntityList, datastore.createQuery(UserEntity.class).asList());
-
+        assertNotEquals(userEntityList, datastore.createQuery(UserEntity.class).asList());
     }
 
     @Test
-    public void deleteUserFromDB() {
+    public void deleteUserFromDb() {
+
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
         datastore.save(tempUserEntity1);
         testObject.deleteUser(tempUserEntity1);
-        Assert.assertEquals(userEntityList, datastore.createQuery(UserEntity.class).asList());
+        assertEquals(userEntityList, datastore.createQuery(UserEntity.class).asList());
     }
 
     @Test
-    public void deleteUserFromDBWhenUserNotFound() {
+    public void deleteUserFromDbWhenUserNotFound() {
+
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
         UserEntity tempUserEntity2 = new UserEntity("2", "Jan2", "Nowak2", "nowak2@mail.com", new Date());
         boolean thrown = false;
@@ -136,11 +143,12 @@ public class UserDBTest {
         } catch (RuntimeException ex) {
             thrown = true;
         }
-        Assert.assertTrue(thrown);
+        assertTrue(thrown);
     }
 
     @Test
-    public void deleteUserFromDBWithNullArgument() {
+    public void deleteUserFromDbWithNullArgument() {
+
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
         boolean thrown = false;
         datastore.save(tempUserEntity1);
@@ -149,37 +157,39 @@ public class UserDBTest {
         } catch (NullPointerException ex) {
             thrown = true;
         }
-        Assert.assertTrue(thrown);
+        assertTrue(thrown);
     }
 
     @Test
-    public void updateUserSuccesfulScenario() {
+    public void updateUserForValidUser() {
+
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
-        UserEntity tempUserEntity1UpdatedValue = tempUserEntity1;
-        tempUserEntity1.setLastName("Kowalski");
         datastore.save(tempUserEntity1);
-        testObject.updateUser("1", tempUserEntity1UpdatedValue);
-        Assert.assertEquals(tempUserEntity1UpdatedValue, datastore.createQuery(UserEntity.class)
+        tempUserEntity1.setLastName("Kowalski");
+        testObject.updateUser("1", tempUserEntity1);
+        assertEquals(tempUserEntity1, datastore.createQuery(UserEntity.class)
                 .field("id").equal("1")
                 .get());
     }
 
     @Test
     public void updateUserUserNotFound() {
+
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
         testObject.updateUser("1", tempUserEntity1);
     }
 
     @Test
     public void updateUserWithNullArgument() {
+
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
-        boolean thrown =false;
+        boolean thrown = false;
         datastore.save(tempUserEntity1);
         try {
             testObject.updateUser("1", null);
         } catch (NullPointerException ex) {
             thrown = true;
         }
-        Assert.assertTrue(thrown);
+        assertTrue(thrown);
     }
 }
