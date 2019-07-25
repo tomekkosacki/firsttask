@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 public class UserDBTest {
 
     private Datastore datastore;
-    private UserDB testObject;
+    private UserDB testUserDB;
     private List<UserEntity> userEntityList = new ArrayList<>();
 
     @Before
@@ -27,7 +27,7 @@ public class UserDBTest {
         Fongo fongo = new Fongo("mongoTestServer");
         datastore = morphia.createDatastore(fongo.getMongo(), "testUserDB");
         datastore.ensureIndexes();
-        testObject = new UserDB(datastore);
+        testUserDB = new UserDB(datastore);
     }
 
     @Test
@@ -36,19 +36,19 @@ public class UserDBTest {
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
         userEntityList.add(tempUserEntity1);
         datastore.save(userEntityList);
-        assertEquals(tempUserEntity1, testObject.getUserById("1"));
+        assertEquals(tempUserEntity1, testUserDB.getUserById("1"));
     }
 
     @Test
     public void getUserByIdFromEmptyDbForValidArgument() {
 
-        assertNull(testObject.getUserById("1"));
+        assertNull(testUserDB.getUserById("1"));
     }
 
     @Test
     public void getUserByIdWithNullArgument() {
 
-        assertNull(testObject.getUserById(null));
+        assertNull(testUserDB.getUserById(null));
     }
 
     @Test
@@ -57,13 +57,13 @@ public class UserDBTest {
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
         userEntityList.add(tempUserEntity1);
         datastore.save(userEntityList);
-        assertNull(testObject.getUserById("2"));
+        assertNull(testUserDB.getUserById("2"));
     }
 
     @Test
     public void getUserByGetAllForEmptyDb() {
 
-        assertEquals(userEntityList, testObject.getUserBy(null, null, null, null, 0, 0, null));
+        assertEquals(userEntityList, testUserDB.getUserBy(null, null, null, null, 0, 0, null));
     }
 
     @Test
@@ -72,13 +72,13 @@ public class UserDBTest {
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
         userEntityList.add(tempUserEntity1);
         datastore.save(userEntityList);
-        assertEquals(userEntityList, testObject.getUserBy(null, null, null, null, 0, 0, null));
+        assertEquals(userEntityList, testUserDB.getUserBy(null, null, null, null, 0, 0, null));
     }
 
     @Test
     public void getUserByFirstNameForEmptyDb() {
 
-        assertEquals(userEntityList, testObject.getUserBy(null, "Jan", null, null, 0, 0, null));
+        assertEquals(userEntityList, testUserDB.getUserBy(null, "Jan", null, null, 0, 0, null));
     }
 
     @Test
@@ -87,7 +87,7 @@ public class UserDBTest {
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
         userEntityList.add(tempUserEntity1);
         datastore.save(userEntityList);
-        assertEquals(userEntityList, testObject.getUserBy(null, "Jan", null, null, 0, 0, null));
+        assertEquals(userEntityList, testUserDB.getUserBy(null, "Jan", null, null, 0, 0, null));
     }
 
     @Test
@@ -95,21 +95,15 @@ public class UserDBTest {
 
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
         userEntityList.add(tempUserEntity1);
-        testObject.createUser(tempUserEntity1);
+        testUserDB.createUser(tempUserEntity1);
         assertEquals(userEntityList, datastore.createQuery(UserEntity.class).asList());
 
     }
 
-    @Test
-    public void createUserWithNullArgument() {
+    @Test(expected = UpdateException.class)
+    public void createUserWithNullArgumentThrowUpdateException() {
 
-        boolean thrown = false;
-        try {
-            testObject.createUser(null);
-        } catch (UpdateException ex) {
-            thrown = true;
-        }
-        assertTrue(thrown);
+        testUserDB.createUser(null);
     }
 
     @Test
@@ -118,7 +112,7 @@ public class UserDBTest {
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
         UserEntity tempUserEntity2 = new UserEntity("1", "Jan", "Kowalski", "nowak@mail.com", new Date());
         userEntityList.add(tempUserEntity1);
-        testObject.createUser(tempUserEntity2);
+        testUserDB.createUser(tempUserEntity2);
         assertNotEquals(userEntityList, datastore.createQuery(UserEntity.class).asList());
     }
 
@@ -127,37 +121,21 @@ public class UserDBTest {
 
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
         datastore.save(tempUserEntity1);
-        testObject.deleteUser(tempUserEntity1);
+        testUserDB.deleteUser(tempUserEntity1);
         assertEquals(userEntityList, datastore.createQuery(UserEntity.class).asList());
     }
 
-    @Test
-    public void deleteUserFromDbWhenUserNotFound() {
+    @Test(expected = RuntimeException.class)
+    public void deleteUserFromDbWhenUserNotFoundThrowRuntimeException() {
 
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
-        UserEntity tempUserEntity2 = new UserEntity("2", "Jan2", "Nowak2", "nowak2@mail.com", new Date());
-        boolean thrown = false;
-        datastore.save(tempUserEntity1);
-        try {
-            testObject.deleteUser(tempUserEntity2);
-        } catch (RuntimeException ex) {
-            thrown = true;
-        }
-        assertTrue(thrown);
+        testUserDB.deleteUser(tempUserEntity1);
     }
 
-    @Test
-    public void deleteUserFromDbWithNullArgument() {
+    @Test(expected = NullPointerException.class)
+    public void deleteUserFromDbWithNullArgumentThrowNullPointerException() {
 
-        UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
-        boolean thrown = false;
-        datastore.save(tempUserEntity1);
-        try {
-            testObject.deleteUser(null);
-        } catch (NullPointerException ex) {
-            thrown = true;
-        }
-        assertTrue(thrown);
+        testUserDB.deleteUser(null);
     }
 
     @Test
@@ -166,30 +144,26 @@ public class UserDBTest {
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
         datastore.save(tempUserEntity1);
         tempUserEntity1.setLastName("Kowalski");
-        testObject.updateUser("1", tempUserEntity1);
+        testUserDB.updateUser("1", tempUserEntity1);
         assertEquals(tempUserEntity1, datastore.createQuery(UserEntity.class)
                 .field("id").equal("1")
                 .get());
     }
 
     @Test
-    public void updateUserUserNotFound() {
+    public void updateUserUserWhenNotFound() {
 
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
-        testObject.updateUser("1", tempUserEntity1);
+        testUserDB.updateUser("1", tempUserEntity1);
+
     }
 
-    @Test
-    public void updateUserWithNullArgument() {
+    @Test(expected = NullPointerException.class)
+    public void updateUserWithNullArgumentThrowNullPointerException() {
 
         UserEntity tempUserEntity1 = new UserEntity("1", "Jan", "Nowak", "nowak@mail.com", new Date());
-        boolean thrown = false;
         datastore.save(tempUserEntity1);
-        try {
-            testObject.updateUser("1", null);
-        } catch (NullPointerException ex) {
-            thrown = true;
-        }
-        assertTrue(thrown);
+        testUserDB.updateUser("1", null);
+
     }
 }

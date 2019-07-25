@@ -18,7 +18,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
-
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {
 
@@ -28,6 +27,7 @@ public class UserServiceTest {
 
     @Before
     public void init() {
+
         testUserService = new UserService(userDB);
     }
 

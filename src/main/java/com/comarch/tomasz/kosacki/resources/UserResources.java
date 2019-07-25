@@ -5,7 +5,6 @@ import com.comarch.tomasz.kosacki.UserService;
 import com.comarch.tomasz.kosacki.dto.UserDto;
 import com.comarch.tomasz.kosacki.mapper.Mapper;
 import com.comarch.tomasz.kosacki.servisExceptions.AppException;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +31,7 @@ public class UserResources {
     @Timed
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserById(@PathParam("id") @NotEmpty String userId) {
+    public Response getUserById(@NotNull @PathParam("id") String userId) {
 
         log.info("Get user by id: {}", userId);
         return Response.ok(this.mapper.userEntityToUserDto(this.userService.getUserById(userId))).build();
@@ -58,7 +57,7 @@ public class UserResources {
     @Path("/add")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes({MediaType.APPLICATION_JSON})
-    public Response createUser(@Valid @NotNull UserDto newUser) throws AppException {
+    public Response createUser(@Valid @NotNull UserDto newUser) {
 
         log.info("Creating new user");
         this.userService.createUser(this.mapper.userDtoToUserEntity(newUser));
@@ -70,7 +69,7 @@ public class UserResources {
     @Path("/delete/{id}")
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public Response deleteUser(@NotNull @PathParam("id") String userId) throws AppException {
+    public Response deleteUser(@NotNull @PathParam("id") String userId) {
 
         log.info("Deleting user with id: {}", userId);
         this.userService.deleteUser(userId);
@@ -82,7 +81,7 @@ public class UserResources {
     @Path("/update/{id}")
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public Response updateUser(@NotNull @PathParam("id") String userId, @Valid @NotNull UserDto updatedValue) throws AppException {
+    public Response updateUser(@NotNull @PathParam("id") String userId, @Valid @NotNull UserDto updatedValue) {
 
         log.info("Updating user with id: {}", userId);
         this.userService.updateUser(userId, this.mapper.userDtoToUserEntity(updatedValue));
