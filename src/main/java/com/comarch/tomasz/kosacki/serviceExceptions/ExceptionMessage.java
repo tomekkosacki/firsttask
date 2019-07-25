@@ -1,4 +1,4 @@
-package com.comarch.tomasz.kosacki.servisExceptions;
+package com.comarch.tomasz.kosacki.serviceExceptions;
 
 
 import java.io.Serializable;

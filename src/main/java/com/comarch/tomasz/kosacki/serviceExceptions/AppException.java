@@ -1,4 +1,4 @@
-package com.comarch.tomasz.kosacki.servisExceptions;
+package com.comarch.tomasz.kosacki.serviceExceptions;
 
 public class AppException extends RuntimeException {
 

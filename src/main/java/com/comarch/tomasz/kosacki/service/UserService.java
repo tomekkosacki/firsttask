@@ -1,10 +1,10 @@
-package com.comarch.tomasz.kosacki;
+package com.comarch.tomasz.kosacki.service;
 
 import com.comarch.tomasz.kosacki.db.UserDB;
-import com.comarch.tomasz.kosacki.servisExceptions.AppException;
-import com.comarch.tomasz.kosacki.servisExceptions.DuplicateKeyExceptionEmail;
-import com.comarch.tomasz.kosacki.servisExceptions.NullArgumentException;
-import com.comarch.tomasz.kosacki.servisExceptions.UserEntityNotFoundException;
+import com.comarch.tomasz.kosacki.serviceExceptions.AppException;
+import com.comarch.tomasz.kosacki.serviceExceptions.DuplicateKeyExceptionEmail;
+import com.comarch.tomasz.kosacki.serviceExceptions.NullArgumentException;
+import com.comarch.tomasz.kosacki.serviceExceptions.UserEntityNotFoundException;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import com.mongodb.DuplicateKeyException;
 import org.slf4j.Logger;

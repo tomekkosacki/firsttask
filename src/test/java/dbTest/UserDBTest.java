@@ -1,3 +1,5 @@
+package dbTest;
+
 import com.comarch.tomasz.kosacki.db.UserDB;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import com.github.fakemongo.Fongo;

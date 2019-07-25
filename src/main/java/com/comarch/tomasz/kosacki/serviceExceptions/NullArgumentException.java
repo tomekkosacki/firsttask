@@ -1,4 +1,4 @@
-package com.comarch.tomasz.kosacki.servisExceptions;
+package com.comarch.tomasz.kosacki.serviceExceptions;
 
 import javax.ws.rs.core.Response;
 

@@ -1,10 +1,9 @@
 package com.comarch.tomasz.kosacki.resources;
 
 import com.codahale.metrics.annotation.Timed;
-import com.comarch.tomasz.kosacki.UserService;
+import com.comarch.tomasz.kosacki.service.UserService;
 import com.comarch.tomasz.kosacki.dto.UserDto;
 import com.comarch.tomasz.kosacki.mapper.Mapper;
-import com.comarch.tomasz.kosacki.servisExceptions.AppException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

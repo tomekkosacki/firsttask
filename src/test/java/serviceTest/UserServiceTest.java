@@ -1,6 +1,8 @@
-import com.comarch.tomasz.kosacki.UserService;
+package serviceTest;
+
+import com.comarch.tomasz.kosacki.service.UserService;
 import com.comarch.tomasz.kosacki.db.UserDB;
-import com.comarch.tomasz.kosacki.servisExceptions.AppException;
+import com.comarch.tomasz.kosacki.serviceExceptions.AppException;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import com.mongodb.DuplicateKeyException;
 import org.junit.Before;
