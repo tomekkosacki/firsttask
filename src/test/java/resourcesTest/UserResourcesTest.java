@@ -91,7 +91,7 @@ public class UserResourcesTest {
     @Test
     public void updateUserForValidArgumentMapperTest() {
 
-        UserDto tempUserDto = new UserDto("Jan", "Nowak", "nowak@mail.com", null);
+        UserDto tempUserDto = new UserDto("Jan", "Nowak", "nowak@mail.com", new Date());
         testUserResources.updateUser("1", tempUserDto);
         verify(mapper, times(1)).userDtoToUserEntity(any());
     }
