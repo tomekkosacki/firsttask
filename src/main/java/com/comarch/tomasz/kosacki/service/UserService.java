@@ -36,7 +36,7 @@ public class UserService {
         if (userEntity != null) {
             return userEntity;
         }
-        log.error("User not found");
+        log.error("User id: {} not found", userId);
         throw new UserEntityNotFoundException(userId);
     }
 
@@ -80,7 +80,7 @@ public class UserService {
         if (userToDelete != null) {
             this.userDB.deleteUser(userToDelete);
         } else {
-            log.error("User not found");
+            log.error("User id: {} not found", userId);
             throw new UserEntityNotFoundException(userId);
         }
     }
@@ -88,7 +88,7 @@ public class UserService {
     public void updateUser(String userId, UserEntity updatedValue) throws AppException {
 
         if (userId == null || updatedValue == null) {
-            log.error("Argument can not null");
+            log.error("Argument can not be null");
             throw new NullArgumentException();
         }
         if (findUserById(userId) != null) {
@@ -99,7 +99,7 @@ public class UserService {
                 throw new DuplicateKeyExceptionEmail();
             }
         } else {
-            log.error("User not found");
+            log.error("User id: {} not found", userId);
             throw new UserEntityNotFoundException(userId);
         }
     }

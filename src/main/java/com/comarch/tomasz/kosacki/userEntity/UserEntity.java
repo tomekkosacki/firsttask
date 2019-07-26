@@ -7,7 +7,7 @@ import org.mongodb.morphia.annotations.Indexed;
 
 import java.util.Date;
 
-@Entity
+@Entity(noClassnameStored = true)
 public class UserEntity {
 
     @Id
