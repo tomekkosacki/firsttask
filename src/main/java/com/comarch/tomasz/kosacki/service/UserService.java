@@ -1,10 +1,7 @@
 package com.comarch.tomasz.kosacki.service;
 
 import com.comarch.tomasz.kosacki.db.UserDB;
-import com.comarch.tomasz.kosacki.serviceExceptions.AppException;
-import com.comarch.tomasz.kosacki.serviceExceptions.DuplicateKeyExceptionEmail;
-import com.comarch.tomasz.kosacki.serviceExceptions.NullArgumentException;
-import com.comarch.tomasz.kosacki.serviceExceptions.UserEntityNotFoundException;
+import com.comarch.tomasz.kosacki.serviceExceptions.*;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import com.mongodb.DuplicateKeyException;
 import org.slf4j.Logger;
@@ -52,15 +49,17 @@ public class UserService {
 
     public void createUser(UserEntity newUser) throws AppException {
 
-        if(newUser == null) {
+        if (newUser == null) {
             log.error("Argument can not be null");
             throw new NullArgumentException();
         }
         newUser.setCreationDate(new Date());
-        String newUserID;
-        do {
-            newUserID = UUID.randomUUID().toString();
-        } while (findUserById(newUserID) != null);
+        String newUserID = UUID.randomUUID().toString();
+
+        if (findUserById(newUserID) != null) {
+            log.error("Duplicate key exception in userId");
+            throw new DuplicateKeyExceptionUserId();
+        }
         newUser.setId(newUserID);
         try {
             this.userDB.createUser(newUser);

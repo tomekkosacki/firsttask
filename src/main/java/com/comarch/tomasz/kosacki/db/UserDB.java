@@ -6,6 +6,7 @@ import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.Criteria;
 import org.mongodb.morphia.query.FindOptions;
 import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.UpdateOperations;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,9 +79,10 @@ public class UserDB implements UserDao {
     public void updateUser(String userIdToUpdate, UserEntity updatedValue) {
 
         Query query = this.datastore.createQuery(UserEntity.class).field("id").equal(userIdToUpdate);
-        this.datastore.update(query, this.datastore.createUpdateOperations(UserEntity.class).set("email", updatedValue.getEmail()));
-        this.datastore.update(query, this.datastore.createUpdateOperations(UserEntity.class).set("firstName", updatedValue.getFirstName()));
-        this.datastore.update(query, this.datastore.createUpdateOperations(UserEntity.class).set("lastName", updatedValue.getLastName()));
+        UpdateOperations<UserEntity> userEntityUpdateOperations = this.datastore.createUpdateOperations(UserEntity.class)
+                .set("email", updatedValue.getEmail())
+                .set("firstName", updatedValue.getFirstName())
+                .set("lastName", updatedValue.getLastName());
+        this.datastore.update(query, userEntityUpdateOperations);
     }
-
 }
