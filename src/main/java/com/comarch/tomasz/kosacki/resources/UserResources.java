@@ -2,9 +2,7 @@ package com.comarch.tomasz.kosacki.resources;
 
 import com.codahale.metrics.annotation.Timed;
 import com.comarch.tomasz.kosacki.dto.UserDto;
-import com.comarch.tomasz.kosacki.mapper.Mapper;
 import com.comarch.tomasz.kosacki.service.UserService;
-import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,11 +18,9 @@ import java.util.List;
 public class UserResources {
 
     private Logger log = LoggerFactory.getLogger(getClass());
-    private Mapper mapper;
     private UserService userService;
 
-    public UserResources(Mapper mapper, UserService userService) {
-        this.mapper = mapper;
+    public UserResources(UserService userService) {
         this.userService = userService;
     }
 
@@ -35,8 +31,7 @@ public class UserResources {
     public Response getUserById(@NotNull @PathParam("id") String userId) {
 
         log.info("Get user by id: {}", userId);
-        UserEntity userEntity = this.userService.getUserById(userId);
-        UserDto userDto = this.mapper.userEntityToUserDto(userEntity);
+        UserDto userDto = this.userService.getUserById(userId);
         return Response.ok(userDto).build();
     }
 
@@ -52,8 +47,7 @@ public class UserResources {
                               @QueryParam("sortBy") String sortBy) {
 
         log.info("Read user by");
-        List<UserEntity> userEntityList = this.userService.getUserBy(userId, userFirstName, userLastName, userEmail, skip, limit, sortBy);
-        List<UserDto> userDtoList = this.mapper.userEntityListToUserDtoList(userEntityList);
+        List<UserDto> userDtoList = this.userService.getUserBy(userId, userFirstName, userLastName, userEmail, skip, limit, sortBy);
         return Response.ok(userDtoList).build();
     }
 
@@ -65,8 +59,7 @@ public class UserResources {
     public Response createUser(@Valid @NotNull UserDto newUser) {
 
         log.info("Creating new user");
-        UserEntity userEntity = this.mapper.userDtoToUserEntity(newUser);
-        this.userService.createUser(userEntity);
+        this.userService.createUser(newUser);
         return Response.ok().build();
     }
 
@@ -90,8 +83,7 @@ public class UserResources {
     public Response updateUser(@NotNull @PathParam("id") String userId, @Valid @NotNull UserDto updatedValue) {
 
         log.info("Updating user with id: {}", userId);
-        UserEntity userEntity = this.mapper.userDtoToUserEntity(updatedValue);
-        this.userService.updateUser(userId, userEntity);
+        this.userService.updateUser(userId, updatedValue);
         return Response.ok().build();
     }
 }

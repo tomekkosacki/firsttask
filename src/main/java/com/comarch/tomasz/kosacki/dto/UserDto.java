@@ -1,5 +1,6 @@
 package com.comarch.tomasz.kosacki.dto;
 
+import com.comarch.tomasz.kosacki.tags.Tag;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -7,6 +8,7 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class UserDto implements Serializable {
 
@@ -18,16 +20,18 @@ public class UserDto implements Serializable {
     @Email
     private String email;
     private String creationDate;
+    private List<Tag> tagList;
 
 
     public UserDto() {
     }
 
-    public UserDto(String firstName, String lastName, String email, Date creationDate) {
+    public UserDto(String firstName, String lastName, String email, Date creationDate, List<Tag> tagList) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         setCreationDate(creationDate);
+        this.tagList = tagList;
     }
 
     public String getFirstName() {
@@ -61,5 +65,13 @@ public class UserDto implements Serializable {
     public void setCreationDate(Date creationDate) {
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         this.creationDate = formatter.format(creationDate);
+    }
+
+    public List<Tag> getTagList() {
+        return tagList;
+    }
+
+    public void setTagList(List<Tag> tagList) {
+        this.tagList = tagList;
     }
 }

@@ -1,12 +1,11 @@
 package com.comarch.tomasz.kosacki.db;
 
 import com.comarch.tomasz.kosacki.dao.UserDao;
+import com.comarch.tomasz.kosacki.serviceExceptions.AppException;
+import com.comarch.tomasz.kosacki.serviceExceptions.SortedByException;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.query.Criteria;
-import org.mongodb.morphia.query.FindOptions;
-import org.mongodb.morphia.query.Query;
-import org.mongodb.morphia.query.UpdateOperations;
+import org.mongodb.morphia.query.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,7 @@ public class UserDB implements UserDao {
     }
 
     @Override
-    public List<UserEntity> getUserBy(String userId, String userFirstName, String userLastName, String userEmail, int skip, int limit, String sortBy) {
+    public List<UserEntity> getUserBy(String userId, String userFirstName, String userLastName, String userEmail, int skip, int limit, String sortBy) throws AppException {
 
         List<Criteria> criteriaList = new ArrayList<>();
         Query<UserEntity> query = datastore.createQuery(UserEntity.class);
@@ -48,14 +47,17 @@ public class UserDB implements UserDao {
         }
         query.and(criteriaList.toArray(new Criteria[0]));
         if (sortBy != null) {
-            return query.order(sortBy)
-                    .asList(new FindOptions()
-                            .skip(skip)
-                            .limit(limit));
-
+//            return query.order(sortBy)
+//                    .asList(new FindOptions()
+//                            .skip(skip)
+//                            .limit(limit));
+            try {
+                query.order(sortBy);
+            } catch (ValidationException ex) {
+                throw new SortedByException();
+            }
         }
-        return query.order()
-                .asList(new FindOptions()
+        return query.asList(new FindOptions()
                         .skip(skip)
                         .limit(limit));
     }

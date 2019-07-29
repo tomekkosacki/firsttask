@@ -1,9 +1,14 @@
 package com.comarch.tomasz.kosacki.service;
 
 import com.comarch.tomasz.kosacki.db.UserDB;
+import com.comarch.tomasz.kosacki.dto.UserDto;
+import com.comarch.tomasz.kosacki.mapper.Mapper;
 import com.comarch.tomasz.kosacki.serviceExceptions.*;
+import com.comarch.tomasz.kosacki.tags.Tag;
+import com.comarch.tomasz.kosacki.tags.TagClient;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import com.mongodb.DuplicateKeyException;
+import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,15 +20,20 @@ public class UserService {
 
     private UserDB userDB;
     private Logger log = LoggerFactory.getLogger(getClass());
+    private TagClient tagClient;
+    private Mapper mapper;
 
     public UserService() {
     }
 
-    public UserService(UserDB userDB) {
+    public UserService(UserDB userDB, TagClient tagClient, Mapper mapper) {
+
         this.userDB = userDB;
+        this.tagClient = tagClient;
+        this.mapper = mapper;
     }
 
-    public UserEntity getUserById(String userId) throws AppException {
+    public UserDto getUserById(String userId) throws AppException {
 
         if (userId == null) {
             log.error("User ID can not null");
@@ -31,38 +41,64 @@ public class UserService {
         }
         UserEntity userEntity = findUserById(userId);
         if (userEntity != null) {
-            return userEntity;
+            UserDto userDto = this.mapper.userEntityToUserDto(userEntity);
+            List<Tag> tagList;
+            try {
+                tagList = getUserTagList(userId);
+            } catch (FeignException ex) {
+                log.error("No connection with TagService");
+                throw new TagConnectionException();
+            }
+            userDto.setTagList(tagList);
+            return userDto;
         }
         log.error("User id: {} not found", userId);
         throw new UserEntityNotFoundException(userId);
     }
 
-    public List<UserEntity> getUserBy(String userId, String userFirstName, String userLastName, String userEmail, int skip, int limit, String sortBy) {
+    public List<UserDto> getUserBy(String userId, String userFirstName, String userLastName, String userEmail, int skip, int limit, String sortBy) throws AppException {
 
         List<UserEntity> userEntityList = this.userDB.getUserBy(userId, userFirstName, userLastName, userEmail, skip, limit, sortBy);
+
         if (!userEntityList.isEmpty()) {
-            return userEntityList;
+
+            List<UserDto> userDtoList = this.mapper.userEntityListToUserDtoList(userEntityList);
+
+            for (int i = 0; i < userEntityList.size(); i++) {
+                UserEntity userEntity = userEntityList.get(i);
+                List<Tag> tagList;
+                try{
+                    tagList = getUserTagList(userEntity.getId());
+                } catch (FeignException ex) {
+                    log.error("No connection with TagService");
+                    throw new TagConnectionException();
+                }
+                UserDto userDto = userDtoList.get(i);
+                userDto.setTagList(tagList);
+            }
+            return userDtoList;
         }
         log.error("User not found");
         throw new UserEntityNotFoundException("");
     }
 
-    public void createUser(UserEntity newUser) throws AppException {
+    public void createUser(UserDto newUser) throws AppException {
 
         if (newUser == null) {
             log.error("Argument can not be null");
             throw new NullArgumentException();
         }
-        newUser.setCreationDate(new Date());
+        UserEntity userEntity = this.mapper.userDtoToUserEntity(newUser);
+        userEntity.setCreationDate(new Date());
         String newUserID = UUID.randomUUID().toString();
 
         if (findUserById(newUserID) != null) {
             log.error("Duplicate key exception in userId");
             throw new DuplicateKeyExceptionUserId();
         }
-        newUser.setId(newUserID);
+        userEntity.setId(newUserID);
         try {
-            this.userDB.createUser(newUser);
+            this.userDB.createUser(userEntity);
         } catch (DuplicateKeyException ex) {
             log.error("DuplicateKeyException on email");
             throw new DuplicateKeyExceptionEmail();
@@ -84,7 +120,7 @@ public class UserService {
         }
     }
 
-    public void updateUser(String userId, UserEntity updatedValue) throws AppException {
+    public void updateUser(String userId, UserDto updatedValue) throws AppException {
 
         if (userId == null || updatedValue == null) {
             log.error("Argument can not be null");
@@ -92,7 +128,8 @@ public class UserService {
         }
         if (findUserById(userId) != null) {
             try {
-                this.userDB.updateUser(userId, updatedValue);
+                UserEntity newUserValue = this.mapper.userDtoToUserEntity(updatedValue);
+                this.userDB.updateUser(userId, newUserValue);
             } catch (DuplicateKeyException ex) {
                 log.error("DuplicateKeyException on email");
                 throw new DuplicateKeyExceptionEmail();
@@ -101,6 +138,19 @@ public class UserService {
             log.error("User id: {} not found", userId);
             throw new UserEntityNotFoundException(userId);
         }
+    }
+
+    private List<Tag> getUserTagList(String userId) {
+        if (userId == null) {
+            log.error("User ID can not null");
+            throw new NullArgumentException();
+        }
+        UserEntity userEntity = findUserById(userId);
+        if (userEntity != null) {
+            return tagClient.getTagByUserId(userId);
+        }
+        log.error("User id: {} not found", userId);
+        throw new UserEntityNotFoundException(userId);
     }
 
     private UserEntity findUserById(String userId) {
