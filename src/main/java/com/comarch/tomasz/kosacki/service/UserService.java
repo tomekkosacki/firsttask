@@ -67,10 +67,10 @@ public class UserService {
             for (int i = 0; i < userEntityList.size(); i++) {
                 UserEntity userEntity = userEntityList.get(i);
                 List<Tag> tagList;
-                try{
+                try {
                     tagList = getUserTagList(userEntity.getId());
                 } catch (FeignException ex) {
-                    log.error("No connection with TagService");
+                    log.error("Error with TagService");
                     throw new TagConnectionException();
                 }
                 UserDto userDto = userDtoList.get(i);
@@ -127,8 +127,8 @@ public class UserService {
             throw new NullArgumentException();
         }
         if (findUserById(userId) != null) {
+            UserEntity newUserValue = this.mapper.userDtoToUserEntity(updatedValue);
             try {
-                UserEntity newUserValue = this.mapper.userDtoToUserEntity(updatedValue);
                 this.userDB.updateUser(userId, newUserValue);
             } catch (DuplicateKeyException ex) {
                 log.error("DuplicateKeyException on email");

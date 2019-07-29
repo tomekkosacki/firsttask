@@ -47,10 +47,6 @@ public class UserDB implements UserDao {
         }
         query.and(criteriaList.toArray(new Criteria[0]));
         if (sortBy != null) {
-//            return query.order(sortBy)
-//                    .asList(new FindOptions()
-//                            .skip(skip)
-//                            .limit(limit));
             try {
                 query.order(sortBy);
             } catch (ValidationException ex) {
@@ -58,8 +54,8 @@ public class UserDB implements UserDao {
             }
         }
         return query.asList(new FindOptions()
-                        .skip(skip)
-                        .limit(limit));
+                .skip(skip)
+                .limit(limit));
     }
 
     @Override
