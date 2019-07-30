@@ -1,7 +1,6 @@
 package com.comarch.tomasz.kosacki.mapper;
 
-import com.comarch.tomasz.kosacki.dto.UserDto;
-import com.comarch.tomasz.kosacki.tags.Tag;
+import com.comarch.tomasz.kosacki.userDto.UserDto;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;

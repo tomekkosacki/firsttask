@@ -1,6 +1,6 @@
-package com.comarch.tomasz.kosacki.dto;
+package com.comarch.tomasz.kosacki.userDto;
 
-import com.comarch.tomasz.kosacki.tags.Tag;
+import com.comarch.tomasz.kosacki.tags.TagDto;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -20,13 +20,13 @@ public class UserDto implements Serializable {
     @Email
     private String email;
     private String creationDate;
-    private List<Tag> tagList;
+    private List<TagDto> tagList;
 
 
     public UserDto() {
     }
 
-    public UserDto(String firstName, String lastName, String email, Date creationDate, List<Tag> tagList) {
+    public UserDto(String firstName, String lastName, String email, Date creationDate, List<TagDto> tagList) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -67,11 +67,11 @@ public class UserDto implements Serializable {
         this.creationDate = formatter.format(creationDate);
     }
 
-    public List<Tag> getTagList() {
+    public List<TagDto> getTagList() {
         return tagList;
     }
 
-    public void setTagList(List<Tag> tagList) {
+    public void setTagList(List<TagDto> tagList) {
         this.tagList = tagList;
     }
 }

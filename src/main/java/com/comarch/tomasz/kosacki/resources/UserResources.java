@@ -1,7 +1,7 @@
 package com.comarch.tomasz.kosacki.resources;
 
 import com.codahale.metrics.annotation.Timed;
-import com.comarch.tomasz.kosacki.dto.UserDto;
+import com.comarch.tomasz.kosacki.userDto.UserDto;
 import com.comarch.tomasz.kosacki.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

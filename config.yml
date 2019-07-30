@@ -7,3 +7,8 @@ server:
   adminConnectors:
     - type: http
       port: 9001
+
+tagUrl : "http://localhost:9002/tags"
+dbName : "morphia_user"
+userName : "admin"
+userPassword : "password"

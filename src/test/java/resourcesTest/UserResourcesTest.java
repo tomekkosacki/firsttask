@@ -1,7 +1,7 @@
 package resourcesTest;
 
 import com.comarch.tomasz.kosacki.service.UserService;
-import com.comarch.tomasz.kosacki.dto.UserDto;
+import com.comarch.tomasz.kosacki.userDto.UserDto;
 import com.comarch.tomasz.kosacki.mapper.Mapper;
 import com.comarch.tomasz.kosacki.resources.UserResources;
 import org.junit.Before;

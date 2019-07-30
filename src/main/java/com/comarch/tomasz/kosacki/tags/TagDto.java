@@ -1,14 +1,14 @@
 package com.comarch.tomasz.kosacki.tags;
 
-public class Tag {
+public class TagDto {
 
     private String tagName;
     private String tagValue;
 
-    public Tag() {
+    public TagDto() {
     }
 
-    public Tag(String tagName, String tagValue) {
+    public TagDto(String tagName, String tagValue) {
         this.tagName = tagName;
         this.tagValue = tagValue;
     }

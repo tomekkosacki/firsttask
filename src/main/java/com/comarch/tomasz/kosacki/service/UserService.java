@@ -1,11 +1,11 @@
 package com.comarch.tomasz.kosacki.service;
 
 import com.comarch.tomasz.kosacki.db.UserDB;
-import com.comarch.tomasz.kosacki.dto.UserDto;
 import com.comarch.tomasz.kosacki.mapper.Mapper;
 import com.comarch.tomasz.kosacki.serviceExceptions.*;
-import com.comarch.tomasz.kosacki.tags.Tag;
 import com.comarch.tomasz.kosacki.tags.TagClient;
+import com.comarch.tomasz.kosacki.tags.TagDto;
+import com.comarch.tomasz.kosacki.userDto.UserDto;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import com.mongodb.DuplicateKeyException;
 import feign.FeignException;
@@ -42,11 +42,11 @@ public class UserService {
         UserEntity userEntity = findUserById(userId);
         if (userEntity != null) {
             UserDto userDto = this.mapper.userEntityToUserDto(userEntity);
-            List<Tag> tagList;
+            List<TagDto> tagList;
             try {
                 tagList = getUserTagList(userId);
             } catch (FeignException ex) {
-                log.error("No connection with TagService");
+                log.error("Error with tag service");
                 throw new TagConnectionException();
             }
             userDto.setTagList(tagList);
@@ -66,7 +66,7 @@ public class UserService {
 
             for (int i = 0; i < userEntityList.size(); i++) {
                 UserEntity userEntity = userEntityList.get(i);
-                List<Tag> tagList;
+                List<TagDto> tagList;
                 try {
                     tagList = getUserTagList(userEntity.getId());
                 } catch (FeignException ex) {
@@ -140,7 +140,7 @@ public class UserService {
         }
     }
 
-    private List<Tag> getUserTagList(String userId) {
+    private List<TagDto> getUserTagList(String userId) {
         if (userId == null) {
             log.error("User ID can not null");
             throw new NullArgumentException();

@@ -11,6 +11,7 @@ import com.comarch.tomasz.kosacki.tags.TagClient;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import com.mongodb.MongoClient;
 import feign.Feign;
+import feign.auth.BasicAuthRequestInterceptor;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 import io.dropwizard.Application;
@@ -28,17 +29,16 @@ public class ClientServiceApp extends Application<ProjectConfiguration> {
     @Override
     public void run(ProjectConfiguration configuration, Environment environment) throws Exception {
 
-        String url = "http://localhost:9002/tags";
-
         TagClient tagClient = Feign.builder()
                 .encoder(new GsonEncoder())
                 .decoder(new GsonDecoder())
-                .target(TagClient.class, url);
+                .requestInterceptor(new BasicAuthRequestInterceptor(configuration.getUserName(), configuration.getUserPassword()))
+                .target(TagClient.class, configuration.getTagUrl());
 
         final Morphia morphia = new Morphia();
         morphia.map(UserEntity.class);
         MongoClient mongoClient = new MongoClient();
-        final Datastore datastore = morphia.createDatastore(mongoClient, "morphia_user");
+        final Datastore datastore = morphia.createDatastore(mongoClient, configuration.getDbName());
         datastore.ensureIndexes();
 
         UserDB userDB = new UserDB(datastore);
