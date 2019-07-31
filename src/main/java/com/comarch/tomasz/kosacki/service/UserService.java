@@ -12,7 +12,8 @@ import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,7 +61,7 @@ public class UserService {
 
         List<UserEntity> userEntityList = this.userDB.getUserBy(userId, userFirstName, userLastName, userEmail, skip, limit, sortBy);
 
-        if (!userEntityList.isEmpty()) {
+        if (userEntityList == null || !userEntityList.isEmpty()) {
 
             List<UserDto> userDtoList = this.mapper.userEntityListToUserDtoList(userEntityList);
 
@@ -89,13 +90,9 @@ public class UserService {
             throw new NullArgumentException();
         }
         UserEntity userEntity = this.mapper.userDtoToUserEntity(newUser);
-        userEntity.setCreationDate(new Date());
+        userEntity.setCreationDate(LocalDateTime.now());
         String newUserID = UUID.randomUUID().toString();
 
-        if (findUserById(newUserID) != null) {
-            log.error("Duplicate key exception in userId");
-            throw new DuplicateKeyExceptionUserId();
-        }
         userEntity.setId(newUserID);
         try {
             this.userDB.createUser(userEntity);
@@ -147,7 +144,7 @@ public class UserService {
         }
         UserEntity userEntity = findUserById(userId);
         if (userEntity != null) {
-            return tagClient.getTagByUserId(userId);
+            return tagClient.getTagBy(userId);
         }
         log.error("User id: {} not found", userId);
         throw new UserEntityNotFoundException(userId);

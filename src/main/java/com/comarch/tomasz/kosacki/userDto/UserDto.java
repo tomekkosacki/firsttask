@@ -5,9 +5,8 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class UserDto implements Serializable {
@@ -19,6 +18,8 @@ public class UserDto implements Serializable {
     @NotEmpty
     @Email
     private String email;
+    private String dateOfBirth;
+
     private String creationDate;
     private List<TagDto> tagList;
 
@@ -26,11 +27,12 @@ public class UserDto implements Serializable {
     public UserDto() {
     }
 
-    public UserDto(String firstName, String lastName, String email, Date creationDate, List<TagDto> tagList) {
+    public UserDto(String firstName, String lastName, String email, LocalDateTime creationDate, LocalDateTime dateOfBirth, List<TagDto> tagList) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         setCreationDate(creationDate);
+        setDateOfBirth(dateOfBirth);
         this.tagList = tagList;
     }
 
@@ -62,9 +64,24 @@ public class UserDto implements Serializable {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        this.creationDate = formatter.format(creationDate);
+    public void setCreationDate(LocalDateTime creationDate) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        this.creationDate = creationDate.format(formatter);
+    }
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDateTime dateOfBirth) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        if (dateOfBirth != null)
+            this.dateOfBirth = dateOfBirth.format(formatter);
+        else
+            this.dateOfBirth = null;
+
+
     }
 
     public List<TagDto> getTagList() {

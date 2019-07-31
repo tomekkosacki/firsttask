@@ -7,8 +7,7 @@ import java.util.List;
 
 public interface TagClient {
 
-    @RequestLine("GET /user/{id}")
-    List<TagDto> getTagByUserId(@Param("id") String userId);
-
+    @RequestLine("GET ?userId={userId}")
+    List<TagDto> getTagBy(@Param("userId") String userId);
 
 }
