@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -61,7 +60,7 @@ public class UserService {
 
         List<UserEntity> userEntityList = this.userDB.getUserBy(userId, userFirstName, userLastName, userEmail, skip, limit, sortBy);
 
-        if (userEntityList == null || !userEntityList.isEmpty()) {
+        if (userEntityList != null && !userEntityList.isEmpty()) {
 
             List<UserDto> userDtoList = this.mapper.userEntityListToUserDtoList(userEntityList);
 
@@ -82,6 +81,36 @@ public class UserService {
         log.error("User not found");
         throw new UserEntityNotFoundException("");
     }
+
+
+
+
+    public List<UserEntity> getUserByDateOfBirthWhenNull() {
+        List<UserEntity> userEntityList = this.userDB.getUserByDateOfBirthWhenNull();
+        if (userEntityList != null && !userEntityList.isEmpty()) {
+            return userEntityList;
+        }
+        log.error("User not found");
+        throw new UserEntityNotFoundException("");
+    }
+
+    public void updateDate(String userId, LocalDateTime dateOfBirth) {
+
+        if (userId == null || dateOfBirth == null) {
+            log.error("Argument can not be null");
+            throw new NullArgumentException();
+        }
+        if (findUserById(userId) != null) {
+            this.userDB.updateUserDateOFBirth(userId, dateOfBirth);
+        } else {
+            log.error("User id: {} not found", userId);
+            throw new UserEntityNotFoundException(userId);
+        }
+    }
+
+
+
+
 
     public void createUser(UserDto newUser) throws AppException {
 

@@ -3,6 +3,7 @@ package com.comarch.tomasz.kosacki;
 import com.comarch.tomasz.kosacki.configurationClass.ProjectConfiguration;
 import com.comarch.tomasz.kosacki.db.UserDB;
 import com.comarch.tomasz.kosacki.health.ServiceHealthCheck;
+import com.comarch.tomasz.kosacki.jobs.DateOfBirthJob;
 import com.comarch.tomasz.kosacki.mapper.Mapper;
 import com.comarch.tomasz.kosacki.resources.UserResources;
 import com.comarch.tomasz.kosacki.service.UserService;
@@ -18,6 +19,8 @@ import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
+import org.quartz.*;
+import org.quartz.impl.StdSchedulerFactory;
 
 
 public class ClientServiceApp extends Application<ProjectConfiguration> {
@@ -49,5 +52,20 @@ public class ClientServiceApp extends Application<ProjectConfiguration> {
         environment.jersey().register(userResources);
         environment.jersey().register(new AppExceptionMapper());
         environment.healthChecks().register("ServiceHealthCheck", new ServiceHealthCheck(mongoClient));
+
+        JobDetail job = JobBuilder.newJob(DateOfBirthJob.class)
+                .withIdentity("someJob", "group1")
+                .build();
+        Trigger trigger = TriggerBuilder
+                .newTrigger()
+                .withIdentity("dummyTriggerName", "group1")
+                .withSchedule(
+                        SimpleScheduleBuilder.simpleSchedule()
+                                .withIntervalInSeconds(5).repeatForever())
+                .build();
+
+        Scheduler scheduler = new StdSchedulerFactory().getScheduler();
+        scheduler.start();
+        scheduler.scheduleJob(job, trigger);
     }
 }

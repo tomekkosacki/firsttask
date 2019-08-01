@@ -7,6 +7,7 @@ import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,5 +83,25 @@ public class UserDB implements UserDao {
                 .set("firstName", updatedValue.getFirstName())
                 .set("lastName", updatedValue.getLastName());
         this.datastore.update(query, userEntityUpdateOperations);
+    }
+
+
+    @Override
+    public void updateUserDateOFBirth(String userId, LocalDateTime dateOfBirth) {
+        Query query = this.datastore.createQuery(UserEntity.class).field("id").equal(userId);
+        UpdateOperations<UserEntity> userEntityUpdateOperations = this.datastore.createUpdateOperations(UserEntity.class)
+                .set("dateOfBirth", dateOfBirth);
+        this.datastore.update(query, userEntityUpdateOperations);
+    }
+
+    @Override
+    public List<UserEntity> getUserByDateOfBirthWhenNull() {
+        List<UserEntity> userEntityList;
+        Query<UserEntity> query = datastore.createQuery(UserEntity.class);
+        userEntityList = query.field("dateOfBirth")
+                .doesNotExist()
+                .asList(new FindOptions()
+                        .limit(100));
+        return userEntityList;
     }
 }
