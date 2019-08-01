@@ -1,7 +1,9 @@
 package com.comarch.tomasz.kosacki;
 
 import com.comarch.tomasz.kosacki.configurationClass.ProjectConfiguration;
+import com.comarch.tomasz.kosacki.dao.UserDao;
 import com.comarch.tomasz.kosacki.db.UserDB;
+import com.comarch.tomasz.kosacki.generators.DateOfBirthGenerator;
 import com.comarch.tomasz.kosacki.health.ServiceHealthCheck;
 import com.comarch.tomasz.kosacki.jobs.DateOfBirthJob;
 import com.comarch.tomasz.kosacki.mapper.Mapper;
@@ -44,28 +46,40 @@ public class ClientServiceApp extends Application<ProjectConfiguration> {
         final Datastore datastore = morphia.createDatastore(mongoClient, configuration.getDbName());
         datastore.ensureIndexes();
 
-        UserDB userDB = new UserDB(datastore);
+        UserDao userDao = new UserDB(datastore);
         Mapper mapper = new Mapper();
-        UserService userService = new UserService(userDB, tagClient, mapper);
+        UserService userService = new UserService(tagClient, mapper, userDao);
         final UserResources userResources = new UserResources(userService);
 
         environment.jersey().register(userResources);
         environment.jersey().register(new AppExceptionMapper());
         environment.healthChecks().register("ServiceHealthCheck", new ServiceHealthCheck(mongoClient));
 
-        JobDetail job = JobBuilder.newJob(DateOfBirthJob.class)
+
+
+        JobDetail job = JobBuilder
+                .newJob(DateOfBirthJob.class)
                 .withIdentity("someJob", "group1")
                 .build();
+
         Trigger trigger = TriggerBuilder
                 .newTrigger()
                 .withIdentity("dummyTriggerName", "group1")
                 .withSchedule(
                         SimpleScheduleBuilder.simpleSchedule()
-                                .withIntervalInSeconds(5).repeatForever())
+                                .withIntervalInSeconds(5)
+                                .repeatForever())
                 .build();
 
-        Scheduler scheduler = new StdSchedulerFactory().getScheduler();
-        scheduler.start();
+        DateOfBirthGenerator dateOfBirthGenerator = new DateOfBirthGenerator();
+
+        Scheduler scheduler = new StdSchedulerFactory().getDefaultScheduler();
+        scheduler.setJobFactory(new UsersJobFactory.Builder().date(dateOfBirthGenerator).userService(userService).build());
         scheduler.scheduleJob(job, trigger);
+        try {
+            scheduler.start();
+        } catch (SchedulerException ex) {
+            ex.printStackTrace();
+        }
     }
 }

@@ -99,9 +99,9 @@ public class UserDB implements UserDao {
         List<UserEntity> userEntityList;
         Query<UserEntity> query = datastore.createQuery(UserEntity.class);
         userEntityList = query.field("dateOfBirth")
-                .doesNotExist()
+                .equal(null)
                 .asList(new FindOptions()
-                        .limit(100));
+                        .limit(1));
         return userEntityList;
     }
 }

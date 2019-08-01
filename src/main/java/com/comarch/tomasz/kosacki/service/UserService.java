@@ -1,5 +1,6 @@
 package com.comarch.tomasz.kosacki.service;
 
+import com.comarch.tomasz.kosacki.dao.UserDao;
 import com.comarch.tomasz.kosacki.db.UserDB;
 import com.comarch.tomasz.kosacki.mapper.Mapper;
 import com.comarch.tomasz.kosacki.serviceExceptions.*;
@@ -18,19 +19,19 @@ import java.util.UUID;
 
 public class UserService {
 
-    private UserDB userDB;
     private Logger log = LoggerFactory.getLogger(getClass());
     private TagClient tagClient;
     private Mapper mapper;
+    private UserDao userDao;
 
     public UserService() {
     }
 
-    public UserService(UserDB userDB, TagClient tagClient, Mapper mapper) {
+    public UserService(TagClient tagClient, Mapper mapper, UserDao userDao) {
 
-        this.userDB = userDB;
         this.tagClient = tagClient;
         this.mapper = mapper;
+        this.userDao = userDao;
     }
 
     public UserDto getUserById(String userId) throws AppException {
@@ -58,7 +59,7 @@ public class UserService {
 
     public List<UserDto> getUserBy(String userId, String userFirstName, String userLastName, String userEmail, int skip, int limit, String sortBy) throws AppException {
 
-        List<UserEntity> userEntityList = this.userDB.getUserBy(userId, userFirstName, userLastName, userEmail, skip, limit, sortBy);
+        List<UserEntity> userEntityList = this.userDao.getUserBy(userId, userFirstName, userLastName, userEmail, skip, limit, sortBy);
 
         if (userEntityList != null && !userEntityList.isEmpty()) {
 
@@ -83,15 +84,11 @@ public class UserService {
     }
 
 
-
-
     public List<UserEntity> getUserByDateOfBirthWhenNull() {
-        List<UserEntity> userEntityList = this.userDB.getUserByDateOfBirthWhenNull();
-        if (userEntityList != null && !userEntityList.isEmpty()) {
-            return userEntityList;
-        }
-        log.error("User not found");
-        throw new UserEntityNotFoundException("");
+
+        List<UserEntity> userEntityList = this.userDao.getUserByDateOfBirthWhenNull();
+        return userEntityList;
+
     }
 
     public void updateDate(String userId, LocalDateTime dateOfBirth) {
@@ -101,15 +98,12 @@ public class UserService {
             throw new NullArgumentException();
         }
         if (findUserById(userId) != null) {
-            this.userDB.updateUserDateOFBirth(userId, dateOfBirth);
+            this.userDao.updateUserDateOFBirth(userId, dateOfBirth);
         } else {
             log.error("User id: {} not found", userId);
             throw new UserEntityNotFoundException(userId);
         }
     }
-
-
-
 
 
     public void createUser(UserDto newUser) throws AppException {
@@ -124,7 +118,7 @@ public class UserService {
 
         userEntity.setId(newUserID);
         try {
-            this.userDB.createUser(userEntity);
+            this.userDao.createUser(userEntity);
         } catch (DuplicateKeyException ex) {
             log.error("DuplicateKeyException on email");
             throw new DuplicateKeyExceptionEmail();
@@ -139,7 +133,7 @@ public class UserService {
         }
         UserEntity userToDelete = findUserById(userId);
         if (userToDelete != null) {
-            this.userDB.deleteUser(userToDelete);
+            this.userDao.deleteUser(userToDelete);
         } else {
             log.error("User id: {} not found", userId);
             throw new UserEntityNotFoundException(userId);
@@ -155,7 +149,7 @@ public class UserService {
         if (findUserById(userId) != null) {
             UserEntity newUserValue = this.mapper.userDtoToUserEntity(updatedValue);
             try {
-                this.userDB.updateUser(userId, newUserValue);
+                this.userDao.updateUser(userId, newUserValue);
             } catch (DuplicateKeyException ex) {
                 log.error("DuplicateKeyException on email");
                 throw new DuplicateKeyExceptionEmail();
@@ -180,6 +174,6 @@ public class UserService {
     }
 
     private UserEntity findUserById(String userId) {
-        return this.userDB.getUserById(userId);
+        return this.userDao.getUserById(userId);
     }
 }
