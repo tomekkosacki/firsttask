@@ -10,7 +10,7 @@ public interface UserDao {
 
     List<UserEntity> getUserBy(String userId, String userFirstName, String userLastName, String userEmail, int offset, int limit, String sortBy);
 
-    List<UserEntity> getUserByFieldWhenNull(int limit, String fieldName);
+    List<UserEntity> getUserByFieldWhenNull(int limit, String fieldName, int skip);
 
     void createUser(UserEntity newUser);
 

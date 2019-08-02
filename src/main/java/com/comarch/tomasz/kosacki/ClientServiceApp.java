@@ -56,20 +56,20 @@ public class ClientServiceApp extends Application<ProjectConfiguration> {
         environment.healthChecks().register("ServiceHealthCheck", new ServiceHealthCheck(mongoClient));
 
 
-//        DateOfBirthGenerator dateOfBirthGenerator = new DateOfBirthGenerator();
-//        UsersJobFactory usersJobFactoryBirthDay = new UsersJobFactory();
-//        try {
-//            usersJobFactoryBirthDay.runDateOFBirthJob(dateOfBirthGenerator, userService, configuration);
-//        } catch (SchedulerException ex) {
-//            ex.printStackTrace();
-//        }
-
-        ZodiacGenerator zodiacGenerator = new ZodiacGenerator();
-        UsersJobFactory usersJobFactoryZodiac = new UsersJobFactory();
+        DateOfBirthGenerator dateOfBirthGenerator = new DateOfBirthGenerator();
+        UsersJobFactory usersJobFactoryBirthDay = new UsersJobFactory();
         try {
-            usersJobFactoryZodiac.runZodiacJob(zodiacGenerator, userDao, configuration, tagClient);
+            usersJobFactoryBirthDay.runDateOFBirthJob(dateOfBirthGenerator, userService, configuration, userDao);
         } catch (SchedulerException ex) {
             ex.printStackTrace();
         }
+
+//        ZodiacGenerator zodiacGenerator = new ZodiacGenerator();
+//        UsersJobFactory usersJobFactoryZodiac = new UsersJobFactory();
+//        try {
+//            usersJobFactoryZodiac.runZodiacJob(zodiacGenerator, userDao, configuration, tagClient);
+//        } catch (SchedulerException ex) {
+//            ex.printStackTrace();
+//        }
     }
 }

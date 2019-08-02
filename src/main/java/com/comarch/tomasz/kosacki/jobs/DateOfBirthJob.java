@@ -1,5 +1,6 @@
 package com.comarch.tomasz.kosacki.jobs;
 
+import com.comarch.tomasz.kosacki.dao.UserDao;
 import com.comarch.tomasz.kosacki.generators.DateOfBirthGenerator;
 import com.comarch.tomasz.kosacki.service.UserService;
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
@@ -15,9 +16,11 @@ public class DateOfBirthJob implements Job {
 
     private UserService userService;
     private DateOfBirthGenerator dateOfBirthGenerator;
+    private UserDao userDao;
     private Logger log = LoggerFactory.getLogger(getClass());
     private int limitPagging;
     private String fieldName = "dateOfBirth";
+    private int listSize;
 
     public DateOfBirthJob() {
     }
@@ -34,16 +37,26 @@ public class DateOfBirthJob implements Job {
         this.limitPagging = limitPagging;
     }
 
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
 
         log.info("DateOfBirthJob started");
-
-        List<UserEntity> userEntityList = userService.getUserByFieldWhenNull(limitPagging, fieldName);
-        for (UserEntity user : userEntityList) {
-            userService.updateUserField(user.getId(), dateOfBirthGenerator.generateDateOfBirth(user.getCreationDate()), fieldName);
-            log.info("updating user: {} date of birth", user.getId());
-        }
+        int iterator = 0;
+        do {
+            List<UserEntity> userEntityList = userDao.getUserBy(null, null, null, null, limitPagging * iterator, limitPagging, null);
+            for (UserEntity user : userEntityList) {
+                if (user.getDateOfBirth() == null) {
+                    userService.updateUserField(user.getId(), dateOfBirthGenerator.generateDateOfBirth(user.getCreationDate()), fieldName);
+                    log.info("updating user: {} date of birth", user.getId());
+                }
+            }
+            iterator++;
+            listSize = userEntityList.size();
+        } while (listSize == limitPagging);
 
     }
 }

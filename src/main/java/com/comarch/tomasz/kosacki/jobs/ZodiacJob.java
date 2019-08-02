@@ -48,9 +48,9 @@ public class ZodiacJob implements Job {
 
         log.info("ZodiacJob started");
 
+        int iterator2 = 0;
 
         do {
-            int iterator2 = 0;
             List<UserEntity> userEntityList = userDao.getUserBy(null, null, null, null, limitPagging * iterator2, limitPagging, null);
             for (UserEntity userEntity : userEntityList) {
                 int iterator = 0;
@@ -64,11 +64,10 @@ public class ZodiacJob implements Job {
                     }
                     iterator++;
                     listSize = tagEntityList.size();
-                } while (listSize < limitPagging);
-                //cos nie działa w tej petli w sprawdzaniu warunku
+                } while (listSize == limitPagging);
             }
             iterator2++;
             listSize = userEntityList.size();
-        } while (listSize < limitPagging);
+        } while (listSize == limitPagging);
     }
 }

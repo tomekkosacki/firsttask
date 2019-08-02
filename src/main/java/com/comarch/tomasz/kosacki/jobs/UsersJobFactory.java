@@ -42,6 +42,7 @@ public class UsersJobFactory extends SimpleJobFactory {
             dateOfBirthJob.setDateOfBirthGenerator(dateOfBirthGenerator);
             dateOfBirthJob.setUserService(userService);
             dateOfBirthJob.setLimitPagging(configuration.getLimitPagging());
+            dateOfBirthJob.setUserDao(userDao);
         } else if (job instanceof ZodiacJob) {
             ZodiacJob zodiacJob = (ZodiacJob) job;
             zodiacJob.setZodiacGenerator(zodiacGenerator);
@@ -88,11 +89,11 @@ public class UsersJobFactory extends SimpleJobFactory {
                 .build();
     }
 
-    private Scheduler dateOfBirthScheduler(DateOfBirthGenerator dateOfBirthGenerator, UserService userService, ProjectConfiguration configuration) throws SchedulerException {
+    private Scheduler dateOfBirthScheduler(DateOfBirthGenerator dateOfBirthGenerator, UserService userService, ProjectConfiguration configuration, UserDao userDao) throws SchedulerException {
         Scheduler scheduler = new StdSchedulerFactory().getDefaultScheduler();
-        scheduler.setJobFactory(new UsersJobFactory
-                .Builder()
+        scheduler.setJobFactory(new Builder()
                 .configuration(configuration)
+                .userDao(userDao)
                 .dateOfBirthGenerator(dateOfBirthGenerator)
                 .userService(userService)
                 .build());
@@ -113,9 +114,9 @@ public class UsersJobFactory extends SimpleJobFactory {
         return scheduler;
     }
 
-    public void runDateOFBirthJob(DateOfBirthGenerator dateOfBirthGenerator, UserService userService, ProjectConfiguration configuration) throws SchedulerException {
+    public void runDateOFBirthJob(DateOfBirthGenerator dateOfBirthGenerator, UserService userService, ProjectConfiguration configuration, UserDao userDao) throws SchedulerException {
 
-        Scheduler scheduler = dateOfBirthScheduler(dateOfBirthGenerator, userService, configuration);
+        Scheduler scheduler = dateOfBirthScheduler(dateOfBirthGenerator, userService, configuration, userDao);
         scheduler.scheduleJob(dateOfBirthJob(), dateOfBirthTrigger(configuration));
         scheduler.start();
     }

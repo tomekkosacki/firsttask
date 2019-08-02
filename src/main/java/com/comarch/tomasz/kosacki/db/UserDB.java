@@ -95,12 +95,12 @@ public class UserDB implements UserDao {
     }
 
     @Override
-    public List<UserEntity> getUserByFieldWhenNull(int limit, String fieldName) {
+    public List<UserEntity> getUserByFieldWhenNull(int limit, String fieldName, int skip) {
         List<UserEntity> userEntityList;
         Query<UserEntity> query = datastore.createQuery(UserEntity.class);
-        userEntityList = query.field(fieldName)
-                .equal(null)
+        userEntityList = query.field(fieldName).equal(null)
                 .asList(new FindOptions()
+                        .skip(skip)
                         .limit(limit));
         return userEntityList;
     }

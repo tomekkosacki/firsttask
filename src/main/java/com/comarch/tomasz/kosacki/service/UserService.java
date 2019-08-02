@@ -89,9 +89,9 @@ public class UserService {
         throw new UserEntityNotFoundException("");
     }
 
-    public List<UserEntity> getUserByFieldWhenNull(int limit, String fieldName) {
+    public List<UserEntity> getUserByFieldWhenNull(int limit, String fieldName, int skip) {
 
-        return this.userDao.getUserByFieldWhenNull(limit, fieldName);
+        return this.userDao.getUserByFieldWhenNull(limit, fieldName, skip);
     }
 
     public void createUser(UserDto newUser) throws AppException {
