@@ -1,6 +1,5 @@
 package com.comarch.tomasz.kosacki.configurationClass;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -15,43 +14,63 @@ public class ProjectConfiguration extends Configuration {
     @NotEmpty
     private String userPassword;
 
-    @JsonProperty
+    private int limitPagging;
+    private int dateOfBirthJobIntervalInSeconds;
+    private int zodiacJobIntervalInSeconds;
+
     public String getTagUrl() {
         return tagUrl;
     }
 
-    @JsonProperty
     public void setTagUrl(String tagUrl) {
         this.tagUrl = tagUrl;
     }
 
-    @JsonProperty
     public String getDbName() {
         return dbName;
     }
 
-    @JsonProperty
     public void setDbName(String dbName) {
         this.dbName = dbName;
     }
 
-    @JsonProperty
     public String getUserName() {
         return userName;
     }
 
-    @JsonProperty
     public void setUserName(String userName) {
         this.userName = userName;
     }
 
-    @JsonProperty
     public String getUserPassword() {
         return userPassword;
     }
 
-    @JsonProperty
     public void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
+    }
+
+    public int getLimitPagging() {
+        return limitPagging;
+    }
+
+    public void setLimitPagging(int limitPagging) {
+        this.limitPagging = limitPagging;
+    }
+
+    public int getDateOfBirthJobIntervalInSeconds() {
+        return dateOfBirthJobIntervalInSeconds;
+    }
+
+    public void setDateOfBirthJobIntervalInSeconds(int dateOfBirthJobIntervalInSeconds) {
+        this.dateOfBirthJobIntervalInSeconds = dateOfBirthJobIntervalInSeconds;
+    }
+
+    public int getZodiacJobIntervalInSeconds() {
+        return zodiacJobIntervalInSeconds;
+    }
+
+    public void setZodiacJobIntervalInSeconds(int zodiacJobIntervalInSeconds) {
+        this.zodiacJobIntervalInSeconds = zodiacJobIntervalInSeconds;
     }
 }

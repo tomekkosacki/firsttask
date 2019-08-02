@@ -1,7 +1,7 @@
 package com.comarch.tomasz.kosacki.service;
 
+import com.comarch.tomasz.kosacki.configurationClass.ProjectConfiguration;
 import com.comarch.tomasz.kosacki.dao.UserDao;
-import com.comarch.tomasz.kosacki.db.UserDB;
 import com.comarch.tomasz.kosacki.mapper.Mapper;
 import com.comarch.tomasz.kosacki.serviceExceptions.*;
 import com.comarch.tomasz.kosacki.tags.TagClient;
@@ -23,15 +23,21 @@ public class UserService {
     private TagClient tagClient;
     private Mapper mapper;
     private UserDao userDao;
+    private ProjectConfiguration configuration;
+
+    private int LIMIT;
+
 
     public UserService() {
     }
 
-    public UserService(TagClient tagClient, Mapper mapper, UserDao userDao) {
+    public UserService(TagClient tagClient, Mapper mapper, UserDao userDao, ProjectConfiguration configuration) {
 
         this.tagClient = tagClient;
         this.mapper = mapper;
         this.userDao = userDao;
+        this.configuration = configuration;
+        LIMIT = configuration.getLimitPagging();
     }
 
     public UserDto getUserById(String userId) throws AppException {
@@ -83,28 +89,10 @@ public class UserService {
         throw new UserEntityNotFoundException("");
     }
 
+    public List<UserEntity> getUserByFieldWhenNull(int limit, String fieldName) {
 
-    public List<UserEntity> getUserByDateOfBirthWhenNull() {
-
-        List<UserEntity> userEntityList = this.userDao.getUserByDateOfBirthWhenNull();
-        return userEntityList;
-
+        return this.userDao.getUserByFieldWhenNull(limit, fieldName);
     }
-
-    public void updateDate(String userId, LocalDateTime dateOfBirth) {
-
-        if (userId == null || dateOfBirth == null) {
-            log.error("Argument can not be null");
-            throw new NullArgumentException();
-        }
-        if (findUserById(userId) != null) {
-            this.userDao.updateUserDateOFBirth(userId, dateOfBirth);
-        } else {
-            log.error("User id: {} not found", userId);
-            throw new UserEntityNotFoundException(userId);
-        }
-    }
-
 
     public void createUser(UserDto newUser) throws AppException {
 
@@ -160,6 +148,20 @@ public class UserService {
         }
     }
 
+    public void updateUserField(String userId, Object value, String fieldName) {
+
+        if (userId == null || value == null || fieldName == null) {
+            log.error("Argument can not be null");
+            throw new NullArgumentException();
+        }
+        if (findUserById(userId) != null) {
+            this.userDao.updateUserField(userId, value, fieldName);
+        } else {
+            log.error("User id: {} not found", userId);
+            throw new UserEntityNotFoundException(userId);
+        }
+    }
+
     private List<TagDto> getUserTagList(String userId) {
         if (userId == null) {
             log.error("User ID can not null");
@@ -167,7 +169,7 @@ public class UserService {
         }
         UserEntity userEntity = findUserById(userId);
         if (userEntity != null) {
-            return tagClient.getTagBy(userId);
+            return tagClient.getTagByUserId(userId, LIMIT, 0);
         }
         log.error("User id: {} not found", userId);
         throw new UserEntityNotFoundException(userId);

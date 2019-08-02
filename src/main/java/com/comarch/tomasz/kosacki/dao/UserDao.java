@@ -2,7 +2,6 @@ package com.comarch.tomasz.kosacki.dao;
 
 import com.comarch.tomasz.kosacki.userEntity.UserEntity;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface UserDao {
@@ -11,7 +10,7 @@ public interface UserDao {
 
     List<UserEntity> getUserBy(String userId, String userFirstName, String userLastName, String userEmail, int offset, int limit, String sortBy);
 
-    List<UserEntity> getUserByDateOfBirthWhenNull();
+    List<UserEntity> getUserByFieldWhenNull(int limit, String fieldName);
 
     void createUser(UserEntity newUser);
 
@@ -19,5 +18,5 @@ public interface UserDao {
 
     void updateUser(String userIdToUpdate, UserEntity updatedValue);
 
-    void updateUserDateOFBirth(String userId, LocalDateTime dateOfBirth);
+    void updateUserField(String userId, Object value, String fieldName);
 }

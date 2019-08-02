@@ -4,8 +4,9 @@ import com.comarch.tomasz.kosacki.configurationClass.ProjectConfiguration;
 import com.comarch.tomasz.kosacki.dao.UserDao;
 import com.comarch.tomasz.kosacki.db.UserDB;
 import com.comarch.tomasz.kosacki.generators.DateOfBirthGenerator;
+import com.comarch.tomasz.kosacki.generators.ZodiacGenerator;
 import com.comarch.tomasz.kosacki.health.ServiceHealthCheck;
-import com.comarch.tomasz.kosacki.jobs.DateOfBirthJob;
+import com.comarch.tomasz.kosacki.jobs.UsersJobFactory;
 import com.comarch.tomasz.kosacki.mapper.Mapper;
 import com.comarch.tomasz.kosacki.resources.UserResources;
 import com.comarch.tomasz.kosacki.service.UserService;
@@ -21,8 +22,7 @@ import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
-import org.quartz.*;
-import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.SchedulerException;
 
 
 public class ClientServiceApp extends Application<ProjectConfiguration> {
@@ -48,7 +48,7 @@ public class ClientServiceApp extends Application<ProjectConfiguration> {
 
         UserDao userDao = new UserDB(datastore);
         Mapper mapper = new Mapper();
-        UserService userService = new UserService(tagClient, mapper, userDao);
+        UserService userService = new UserService(tagClient, mapper, userDao, configuration);
         final UserResources userResources = new UserResources(userService);
 
         environment.jersey().register(userResources);
@@ -56,28 +56,18 @@ public class ClientServiceApp extends Application<ProjectConfiguration> {
         environment.healthChecks().register("ServiceHealthCheck", new ServiceHealthCheck(mongoClient));
 
 
+//        DateOfBirthGenerator dateOfBirthGenerator = new DateOfBirthGenerator();
+//        UsersJobFactory usersJobFactoryBirthDay = new UsersJobFactory();
+//        try {
+//            usersJobFactoryBirthDay.runDateOFBirthJob(dateOfBirthGenerator, userService, configuration);
+//        } catch (SchedulerException ex) {
+//            ex.printStackTrace();
+//        }
 
-        JobDetail job = JobBuilder
-                .newJob(DateOfBirthJob.class)
-                .withIdentity("someJob", "group1")
-                .build();
-
-        Trigger trigger = TriggerBuilder
-                .newTrigger()
-                .withIdentity("dummyTriggerName", "group1")
-                .withSchedule(
-                        SimpleScheduleBuilder.simpleSchedule()
-                                .withIntervalInSeconds(5)
-                                .repeatForever())
-                .build();
-
-        DateOfBirthGenerator dateOfBirthGenerator = new DateOfBirthGenerator();
-
-        Scheduler scheduler = new StdSchedulerFactory().getDefaultScheduler();
-        scheduler.setJobFactory(new UsersJobFactory.Builder().date(dateOfBirthGenerator).userService(userService).build());
-        scheduler.scheduleJob(job, trigger);
+        ZodiacGenerator zodiacGenerator = new ZodiacGenerator();
+        UsersJobFactory usersJobFactoryZodiac = new UsersJobFactory();
         try {
-            scheduler.start();
+            usersJobFactoryZodiac.runZodiacJob(zodiacGenerator, userDao, configuration, tagClient);
         } catch (SchedulerException ex) {
             ex.printStackTrace();
         }

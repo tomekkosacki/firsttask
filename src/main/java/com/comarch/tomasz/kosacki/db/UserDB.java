@@ -87,21 +87,21 @@ public class UserDB implements UserDao {
 
 
     @Override
-    public void updateUserDateOFBirth(String userId, LocalDateTime dateOfBirth) {
+    public void updateUserField(String userId, Object value, String fieldName) {
         Query query = this.datastore.createQuery(UserEntity.class).field("id").equal(userId);
         UpdateOperations<UserEntity> userEntityUpdateOperations = this.datastore.createUpdateOperations(UserEntity.class)
-                .set("dateOfBirth", dateOfBirth);
+                .set(fieldName, value);
         this.datastore.update(query, userEntityUpdateOperations);
     }
 
     @Override
-    public List<UserEntity> getUserByDateOfBirthWhenNull() {
+    public List<UserEntity> getUserByFieldWhenNull(int limit, String fieldName) {
         List<UserEntity> userEntityList;
         Query<UserEntity> query = datastore.createQuery(UserEntity.class);
-        userEntityList = query.field("dateOfBirth")
+        userEntityList = query.field(fieldName)
                 .equal(null)
                 .asList(new FindOptions()
-                        .limit(1));
+                        .limit(limit));
         return userEntityList;
     }
 }
